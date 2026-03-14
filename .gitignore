@@ -1,0 +1,23 @@
+# System / IDE
+.DS_Store
+.claude/
+.anthropic/
+CLAUDE.md
+
+# Python / Environment
+__pycache__/
+*.py[cod]
+*.pyc
+venv/
+.env
+
+# Data / Storage
+data/*.pdf
+*.faiss
+*.pkl
+
+# Evaluation / Output
+eval/results/*.json
+
+DECISIONS.md
+DECISION_LOG.md
