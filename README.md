@@ -1,0 +1,22 @@
+Assumptions:
+1. PDF is text based, not image based
+2. 
+
+Prod would need real table parsing
+
+What would change if the domain is not finance but healthcare/CS research? Chunking strategy??
+
+Latency and cost
+
+chars per token = 4 for english, but depending on domain, may change
+
+page number is by global PDF pg no
+
+simple prepending -> test eval -> section level context retrieval if needed
+
+In retrospect, I would have started with recursive character splitting to get an end-to-end pipeline working on Day 1, then upgraded to section-aware chunking after identifying retrieval failures in evaluation. The current implementation went straight to section-aware chunking, which produced better results but delayed the first full integration test.
+
+future improvements:
+list chunk size/overlap hyperparam tuning
+hallucination check
+no per line per page tracking/citing (DO THIS AFTER EVAL, THREAD PG NO THROUGH)
