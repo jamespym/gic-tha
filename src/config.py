@@ -31,3 +31,9 @@ FOOTER_ZONE = 0.93
 # below the estimated body size. Catches footnotes and fine print.
 # Set to None to disable footnote filtering entirely.
 FOOTNOTE_SIZE_DELTA = 1.5
+
+# ---------------------------------------------------------------------------
+# Indexing
+# ---------------------------------------------------------------------------
+
+INDEX_DIR = DATA_DIR / "index"
