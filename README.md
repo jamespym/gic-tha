@@ -20,3 +20,6 @@ future improvements:
 list chunk size/overlap hyperparam tuning
 hallucination check
 no per line per page tracking/citing (DO THIS AFTER EVAL, THREAD PG NO THROUGH)
+
+design decisions:
+BAAI bge small: local for data sovereignty. small, fast (no api call latency), free. product would probably use bge-large

@@ -28,7 +28,7 @@ def build_faiss_index(chunks: list[Chunk]) -> faiss.Index:
 
 # BM25 
 def build_bm25_index(chunks: list[Chunk]) -> BM25Okapi:
-    tokenized = [chunk.text.split() for chunk in chunks]
+    tokenized = [chunk.text.lower().split() for chunk in chunks]
     return BM25Okapi(tokenized)
 
 # Saving and Loading
