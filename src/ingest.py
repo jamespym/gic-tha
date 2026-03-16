@@ -326,3 +326,10 @@ if __name__ == "__main__":
     headings = Counter(c.section for c in chunks)
     for heading, count in headings.most_common(20):
         print(f"{count:4d}  {heading}")
+        
+    # p51_chunks = [c for c in chunks if c.page_start <= 51 <= c.page_end]
+    # print(f"Chunks covering page 51: {len(p51_chunks)}")
+    # for c in p51_chunks:
+    #     print(f"--- Chunk {c.chunk_id} | {c.section} | Pages {c.page_start}-{c.page_end} ---")
+    #     print(repr(c.text[:500]))
+    #     print()
