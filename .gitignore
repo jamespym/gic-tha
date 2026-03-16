@@ -3,6 +3,7 @@
 .claude/
 .anthropic/
 CLAUDE.md
+.claude/
 
 # Python / Environment
 __pycache__/

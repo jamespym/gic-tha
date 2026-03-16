@@ -25,3 +25,5 @@ design decisions:
 BAAI bge small: local for data sovereignty. small, fast (no api call latency), free. product would probably use bge-large
 
 Consolidated financial statement tables (e.g. page 53 income statement) are not retrieved for firm-wide queries like "revenue growth". Segment-level narrative chunks surface instead because they contain semantically rich prose. Enrich.py will address this by prepending LLM-generated summaries to table chunks before embedding. Expected impact: high for numerical/comparison queries, low for qualitative queries.
+
+RETRIEVAL IS BROKENNNN ON TABLES

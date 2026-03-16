@@ -1,0 +1,33 @@
+[
+  {
+    "id": "001",
+    "query": "What is the total net revenue?",
+    "expected_answer": "$128.7 billion (firm-wide, 2022)",
+    "expected_pages": [53],
+    "failure_mode": "scope_error",
+    "retrieval_failure": true,
+    "hallucination_check_incorrect": true,
+    "notes": "Model returned CIB segment revenue ($47.9B, p.69) instead of consolidated. Page 53 not in candidate pool. Known gap — enrich.py should fix.",
+    "raw": "The total net revenue for the year ended December 31, 2022, is $47.9 billion [p.69].Hallucination check: PASS
+              [64-64] Selected metrics - J.P. Morgan Payments: (in millions, except where otherwise noted) Year ended December 31, 2022 2021 2020 Total net revenue...
+              [75-75] Selected income statement data: Year ended December 31, (in millions) 2022 2021 2020 2022 compared with 2021 Net income was $4.2 bil...
+              [78-79] Selected income statement data: Year ended December 31, (in millions, except ratios) 2022 2021 2020 Revenue 2022 compared with 2021 ...
+              [302-305] Mortgage origination channels:: exes. Taxable-equivalent basis: In presenting results on a managed basis, the total net revenue for ...
+              [69-70] Selected income statement data: Year ended December 31, (in millions, except ratios) 2022 2021 2020 2022 compared with 2021 Net inco...
+            (venv) yiming@Poons-MacBook-Air-5 gic_tha % "
+  }
+]
+
+query: "What were the key factors behind the increase in net interest income in 2022?"
+
+The key factors behind the increase in net interest income in 2022 were primarily driven by deposit margin expansion on higher rates and growth in loans. However, this was predominantly offset by the impact of higher funding costs and lower deposits [p.75].
+
+Hallucination check: PASS
+Reason: all four criteria are met. The answer correctly reflects the factors contributing to the increase in net interest income in 2022, is supported by the provided sources, matches the firm-wide context of the query, and does not omit any relevant information.
+
+  [75-75] Selected income statement data: Year ended December 31, (in millions) 2022 2021 2020 2022 compared with 2021 Net income was $4.2 bil...
+  [78-79] Selected income statement data: Year ended December 31, (in millions, except ratios) 2022 2021 2020 Revenue 2022 compared with 2021 ...
+  [57-58] Selected Consolidated balance sheets data: and Investment Risk Management on pages 106-130, and Notes 1, 2, 3, 12 and 13 for further discussion...
+  [174-189] Assets and liabilities measured at fair value on a recurring basis: n page 185 for further information on changes impacting items measured at fair value on a nonrecurri...
+  [72-73] League table results – wallet share: 2022 2021 2020 Year ended December 31, Rank Share Rank Share Rank Share Based on fees(a) Markets rev...
+
