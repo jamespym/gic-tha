@@ -115,4 +115,4 @@ if __name__ == "__main__":
         print(f"Reason: {hc['reason']}")
     print()
     for s in result["sources"]:
-        print(f"  [{s['pages']}] {s['section']}: {s['excerpt'][:100]}...")
+        print(f"  [{s['pages']}] {s['section']}: {s['excerpt'][:400]}...")
