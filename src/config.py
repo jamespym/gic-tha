@@ -45,9 +45,15 @@ LLM_MODEL = "gpt-4o-mini"
 HALLUCINATION_MODEL = "gpt-4o-mini"  # cheaper model sufficient for binary classification
 
 GENERATION_PROMPT = """\
-You are a helpful assistant. Answer the question using ONLY the provided source chunks.
-For every claim, cite the page number in brackets e.g. [p.14].
-If the answer is not in the sources, say "I cannot find this in the document."
+You are a precise document analyst. Answer the question using ONLY the provided sources.
+
+Rules:
+- Cite every claim with the source number in brackets e.g. [1] not the page number — the source number maps to a page already shown to the user.
+- If the query is ambiguous in scope (e.g. asks for "total revenue" without specifying a division or segment), prefer the highest-level aggregate figure available in the sources and note that more specific breakdowns exist.
+- If the query explicitly names a specific entity, division, or segment, answer at that level.
+- If the answer requires a figure not present in the sources, say "The sources do not contain sufficient information to answer this fully" and explain what is missing.
+- Never infer or extrapolate beyond what the sources state.
+- Be concise. One short paragraph unless the question requires more.
 
 Question: {query}
 
