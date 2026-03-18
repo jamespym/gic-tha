@@ -18,8 +18,50 @@ In retrospect, I would have started with recursive character splitting to get an
 
 future improvements:
 list chunk size/overlap hyperparam tuning
-hallucination check
 no per line per page tracking/citing (DO THIS AFTER EVAL, THREAD PG NO THROUGH)
+
+## Hallucination checker
+
+A single-pass hallucination check was implemented in `generate.py`. After generating an answer, a second GPT-4o-mini call re-read the same retrieved chunks and checked the answer against four criteria: grounded, scope, complete, hedged. It returned a PASS/FAIL verdict with a one-sentence reason.
+
+**Why it was removed:**
+
+The checker was given the same 5 retrieved chunks that the generator used — it had no independent access to the full document. This means it was asking a model to verify an answer against the exact context that produced it. In practice it almost always returned PASS, because the answer was generated from those chunks and was locally consistent with them. It was not catching the real failure mode: cases where the retrieved chunks were themselves insufficient or the wrong scope, and the answer was wrong relative to the full document.
+
+**Where it could work:**
+
+LLM-as-judge hallucination checking is well-validated for open-ended generation tasks (summarisation, long-document QA, chatbot responses). The canonical failure mode it targets is when a model ignores retrieved context and answers from parametric memory instead — fabricating figures it "knows" from training data rather than reading the sources. For that failure mode, it works well and is used in frameworks like RAGAS and TruLens.
+
+The issue is that this is not our pipeline's weak point. GPT-4o-mini with explicit grounding instructions is already faithful to whatever chunks it receives. Our failures are upstream — in ingest (tables not parsed well, chunks split across section boundaries) and in retrieval (wrong chunks surface for numerical or firm-wide queries). The checker sees an answer that is locally consistent with the retrieved chunks, returns PASS, and misses the real error entirely.
+
+It would add value in:
+- A setup where the checker has access to a broader context than the generator
+- Catching scope errors on negative questions (did the model correctly say "I don't know"?)
+- A pipeline where generation faithfulness is actually the weak point, e.g. a model without strong instruction-following
+
+**On adding it back for implicit ranking questions:** implicit ranking queries (e.g. "what is the largest operational risk?") were considered as a case where the HC would genuinely help — the model overclaims by presenting one item from a list as definitively the greatest, which the checker's HEDGED criterion would catch. However, this overclaiming is already addressed by prompt engineering ("if sources do not rank items, list all and note the document does not indicate precedence"). Adding the HC on top would be redundant at the generation level, and it still would not address the underlying retrieval problem — top-k may not surface all relevant chunks regardless.
+
+## Known failure modes (19/3/25, pre-eval)
+
+**Ingest/chunking:**
+- Tables parsed as garbled text or split across chunks — numbers lose row/column context
+- Section boundaries occasionally misdetected — chunks bleed across sections
+
+**Retrieval:**
+- Firm-wide queries surface segment-level chunks instead of consolidated statements (scope mismatch)
+- Numerical queries retrieve prose summaries of tables rather than the tables themselves
+- Short boilerplate chunks ("None.") rank high when query has no strong signal
+
+**Generation:**
+- Scope errors — answers at wrong level of aggregation (segment vs firm-wide), partly a retrieval problem, partly prompt
+- Incomplete synthesis on cross-section questions — picks dominant source, ignores secondary
+- Second-order reasoning — "how did X affect Y" sometimes lists facts separately rather than connecting them
+
+**Root cause:** most failures trace back to ingest quality, not retrieval or generation. Better table parsing would fix numerical-table failures, scope mismatches, and some cross-section failures in one shot.
+
+**Not a failure mode:** hallucination on grounded questions (model rarely fabricates when right chunks are retrieved), negative questions (correctly says "I don't know").
+
+**Implicit ranking questions** (e.g. "what is JPMorgan's largest operational risk?") — document lists items without ranking them. Generation failure: model picks the first/most prominent and states it as fact. Partial fix: prompt engineering ("if sources don't rank, list all and say so"). Retrieval problem remains — top-k may not surface all relevant chunks. Not a separate question type; folded into cross-section questions with hedging as the expected behaviour.
 
 design decisions:
 BAAI bge small: local for data sovereignty. small, fast (no api call latency), free. product would probably use bge-large

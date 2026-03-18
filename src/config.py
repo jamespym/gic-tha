@@ -42,7 +42,6 @@ INDEX_DIR = DATA_DIR / "index"
 # Generation
 # ---------------------------------------------------------------------------
 LLM_MODEL = "gpt-4o-mini"
-HALLUCINATION_MODEL = "gpt-4o-mini"  # cheaper model sufficient for binary classification
 
 GENERATION_PROMPT = """\
 You are a precise document analyst. Answer the question using ONLY the provided sources.
@@ -61,27 +60,3 @@ Sources:
 {sources}
 """
 
-HALLUCINATION_PROMPT = """You are evaluating whether an answer correctly responds to a query based only on the provided sources.
-
-Query: {query}
-
-Answer: {answer}
-
-Sources:
-{sources}
-
-Check ALL of the following:
-1. GROUNDED: Every factual claim in the answer appears in the sources. No numbers or facts are fabricated.
-2. SCOPE: The answer matches the scope of the query. If the query asks for a firm-wide figure, a segment-level figure is not an acceptable answer even if it appears in the sources.
-3. COMPLETE: The answer does not ignore a more relevant source in favour of a less relevant one.
-4. HEDGED: If the sources are insufficient to answer the query fully, the answer acknowledges this rather than presenting a partial answer as complete.
-
-Respond with one of:
-PASS - all four criteria are met
-FAIL: GROUNDED - answer contains claims not in sources
-FAIL: SCOPE - answer answers a different scope than the query (e.g. segment vs firm-wide)
-FAIL: COMPLETE - answer overlooks a more relevant source
-FAIL: HEDGED - answer presents a partial answer as complete without caveat
-
-Then one sentence explaining your reasoning.
-"""

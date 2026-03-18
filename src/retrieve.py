@@ -6,9 +6,12 @@ import faiss
 import numpy as np
 from . import config
 
+_embedding_model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+_cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+
+
 def _dense_retrieve(query: str, faiss_index: faiss.Index, top_k: int) -> list[tuple[int, float]]:
-    embedding_model = SentenceTransformer("BAAI/bge-small-en-v1.5") 
-    query_vector = embedding_model.encode(query, normalize_embeddings=True)
+    query_vector = _embedding_model.encode(query, normalize_embeddings=True)
     scores, indices = faiss_index.search(query_vector.reshape(1, -1), top_k)
     
     return list(zip(indices[0].tolist(), scores[0].tolist()))
@@ -38,9 +41,8 @@ def _rerank(query: str, candidates: list[int], chunks: list[Chunk], top_k: int) 
     candidates: list of chunk ids
     candidates[i]: 
     """
-    xencoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
     pairs = [(query, chunks[i].text) for i in candidates]
-    scores = xencoder.predict(pairs) # Relevance score
+    scores = _cross_encoder.predict(pairs)  # Relevance score
     top_indices = np.argsort(scores)[::-1][:top_k]
     
     return [chunks[candidates[i]] for i in top_indices]
