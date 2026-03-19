@@ -68,4 +68,8 @@ BAAI bge small: local for data sovereignty. small, fast (no api call latency), f
 
 Consolidated financial statement tables (e.g. page 53 income statement) are not retrieved for firm-wide queries like "revenue growth". Segment-level narrative chunks surface instead because they contain semantically rich prose. Enrich.py will address this by prepending LLM-generated summaries to table chunks before embedding. Expected impact: high for numerical/comparison queries, low for qualitative queries.
 
-RETRIEVAL IS BROKENNNN ON TABLES
+can also add or test retrieval quality by positioning query below sources [lost in the middle]. check if retrieval quality is the bottleneck first.
+
+**Derived metric queries** (e.g. "what is the gross margin for 2022?") — gross margin is revenue / COGS, but the query only says "gross margin". FAISS/BM25 retrieve on the query string alone and have no way to know two separate chunks are needed. Fails silently if the figure isn't stated explicitly in the document. HyDE would help (hypothetical answer embeds revenue + COGS signals); query decomposition would explicitly split into sub-queries. Known limitation, not addressed in current pipeline.
+
+INGEST/RETRIEVAL IS BROKENNNN ON TABLES

@@ -52,6 +52,7 @@ Rules:
 - If the query explicitly names a specific entity, division, or segment, answer at that level.
 - If the answer requires a figure not present in the sources, say "The sources do not contain sufficient information to answer this fully" and explain what is missing.
 - Never infer or extrapolate beyond what the sources state.
+- If the query regards superlatives or comparison of items, but the sources list multiple without ranking them explicitly, list all candidates and state that the document does not explicitly rank them.
 - Be concise. One short paragraph unless the question requires more.
 
 Question: {query}
