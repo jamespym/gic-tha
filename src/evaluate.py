@@ -1,14 +1,12 @@
 import json
 import re
 from datetime import datetime
-
 from openai import OpenAI
-
 from . import config
+from .ingest import Chunk
 from .index import load_index
 from .retrieve import retrieve
 from .generate import generate
-
 
 _client = OpenAI(api_key=config.OPENAI_API_KEY)
 
@@ -16,51 +14,108 @@ QUESTIONS_PATH = config.PROJECT_ROOT / "eval" / "questions.json"
 RESULTS_DIR = config.PROJECT_ROOT / "eval" / "results"
 
 
-def _judge(question: str, expected_answer: str, answer: str) -> dict:
-    """Call LLM judge and return {"score": int, "reason": str}."""
-    prompt = config.JUDGE_PROMPT.format(
-        question=question,
-        expected_answer=expected_answer,
-        answer=answer,
-    )
+def _format_context(chunks: list[Chunk]) -> str:
+    parts = []
+    for i, chunk in enumerate(chunks, 1):
+        parts.append(f"[{i}] Section: {chunk.section} | Pages {chunk.page_start}-{chunk.page_end}\n{chunk.text}")
+    return "\n\n".join(parts)
+
+
+def _call_judge(prompt: str) -> tuple[bool, str]:
+    """Call LLM judge and return (passed, reason)."""
     response = _client.chat.completions.create(
         model=config.LLM_MODEL,
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
     )
     text = response.choices[0].message.content.strip()
+    answer_match = re.search(r"\b(Yes|No)\b", text, re.IGNORECASE)
 
-    score_match = re.search(r"Score:\s*([1-5])", text)
-    reason_match = re.search(r"Reason:\s*(.+)", text)
+    passed = answer_match.group(1).lower() == "yes" if answer_match else False
+    return passed, text
 
-    score = int(score_match.group(1)) if score_match else 0
-    reason = reason_match.group(1).strip() if reason_match else text
 
-    return {"score": score, "reason": reason}
+def _score_retrieval(question: str, chunks: list[Chunk]) -> tuple[bool, str]:
+    prompt = config.RETRIEVAL_JUDGE_PROMPT.format(
+        question=question,
+        context=_format_context(chunks),
+    )
+    return _call_judge(prompt)
+
+
+def _score_correctness(question: str, expected_answer: str, answer: str) -> tuple[bool, str]:
+    prompt = config.CORRECTNESS_JUDGE_PROMPT.format(
+        question=question,
+        expected_answer=expected_answer,
+        answer=answer,
+    )
+    return _call_judge(prompt)
+
+
+def _score_faithfulness(answer: str, chunks: list[Chunk]) -> tuple[bool, str]:
+    prompt = config.FAITHFULNESS_JUDGE_PROMPT.format(
+        answer=answer,
+        context=_format_context(chunks),
+    )
+    return _call_judge(prompt)
 
 
 def _print_summary(results: list[dict]) -> None:
-    """Print avg scores by question type and source_type."""
-    print("\n=== Results by type ===")
-    by_type: dict[str, list[int]] = {}
-    for r in results:
-        t = r["type"]
-        by_type.setdefault(t, []).append(r["score"])
-    for t, scores in sorted(by_type.items()):
-        avg = sum(scores) / len(scores)
-        print(f"  {t:<15} n={len(scores)}  avg={avg:.2f}")
+    dims = ["retrieval_passed", "correctness_passed", "faithfulness_passed"]
+    labels = {"retrieval_passed": "Retrieval", "correctness_passed": "Correctness", "faithfulness_passed": "Faithfulness"}
 
-    print("\n=== Results by source_type ===")
-    by_source: dict[str, list[int]] = {}
+    print("\n=== Pass rates by dimension ===")
+    for dim in dims:
+        scores = [r[dim] for r in results if r[dim] is not None]
+        pct = sum(scores) / len(scores) * 100
+        print(f"  {labels[dim]:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
+
+    print("\n=== Retrieval pass rate by question type ===")
+    by_type_r: dict[str, list[bool]] = {}
     for r in results:
-        st = r["source_type"] or "n/a"
-        by_source.setdefault(st, []).append(r["score"])
+        if r["retrieval_passed"] is not None:
+            by_type_r.setdefault(r["type"], []).append(r["retrieval_passed"])
+    for t, scores in sorted(by_type_r.items()):
+        pct = sum(scores) / len(scores) * 100
+        print(f"  {t:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
+
+    print("\n=== Retrieval pass rate by source_type ===")
+    by_source: dict[str, list[bool]] = {}
+    for r in results:
+        if r["retrieval_passed"] is not None:
+            st = r["source_type"] or "n/a"
+            by_source.setdefault(st, []).append(r["retrieval_passed"])
     for st, scores in sorted(by_source.items()):
-        avg = sum(scores) / len(scores)
-        print(f"  {st:<15} n={len(scores)}  avg={avg:.2f}")
+        pct = sum(scores) / len(scores) * 100
+        print(f"  {st:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
 
-    overall = sum(r["score"] for r in results) / len(results)
-    print(f"\n  Overall: n={len(results)}  avg={overall:.2f}")
+    print("\n=== Correctness pass rate by question type ===")
+    by_type_c: dict[str, list[bool]] = {}
+    for r in results:
+        if r["correctness_passed"] is not None:
+            by_type_c.setdefault(r["type"], []).append(r["correctness_passed"])
+    for t, scores in sorted(by_type_c.items()):
+        pct = sum(scores) / len(scores) * 100
+        print(f"  {t:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
+
+    print("\n=== Correctness pass rate by source_type ===")
+    by_source_c: dict[str, list[bool]] = {}
+    for r in results:
+        if r["correctness_passed"] is not None:
+            st = r["source_type"] or "n/a"
+            by_source_c.setdefault(st, []).append(r["correctness_passed"])
+    for st, scores in sorted(by_source_c.items()):
+        pct = sum(scores) / len(scores) * 100
+        print(f"  {st:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
+
+    print("\n=== Faithfulness pass rate by question type ===")
+    by_type_f: dict[str, list[bool]] = {}
+    for r in results:
+        if r["faithfulness_passed"] is not None:
+            by_type_f.setdefault(r["type"], []).append(r["faithfulness_passed"])
+    for t, scores in sorted(by_type_f.items()):
+        pct = sum(scores) / len(scores) * 100
+        print(f"  {t:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
 
 
 def run_eval() -> None:
@@ -76,22 +131,24 @@ def run_eval() -> None:
         qid = q["id"]
         question = q["question"]
         expected = q["expected_answer"]
+        is_negative = q["source_type"] is None
 
         print(f"[{qid}] {question}")
-        print(f"  Expected: {expected}")
         top_chunks = retrieve(question, faiss_index, bm25_index, chunks)
         generated = generate(question, top_chunks)
         answer = generated["answer"]
-        print(f"  Answer:   {answer}")
-        print("  Chunks retrieved:")
-        for i, chunk in enumerate(top_chunks, 1):
-            print(f"    [{i}] [{chunk.page_start}-{chunk.page_end}] {chunk.section}")
-            print(f"        {chunk.text[:150].strip()}...")
+        print(f"  Answer: {answer}")
 
-        judgment = _judge(question, expected, answer)
-        score = judgment["score"]
-        reason = judgment["reason"]
-        print(f"  Score: {score}/5 — {reason}\n")
+        retrieval_passed, _ = _score_retrieval(question, top_chunks)
+        faithfulness_passed, faithfulness_reason = _score_faithfulness(answer, top_chunks)
+        if is_negative:
+            correctness_passed, correctness_reason = None, "skipped — negative question"
+        else:
+            correctness_passed, correctness_reason = _score_correctness(question, expected, answer)
+
+        print(f"  Retrieval:    {'PASS' if retrieval_passed else 'FAIL'}")
+        print(f"  Correctness:  {'PASS' if correctness_passed else 'FAIL' if correctness_passed is not None else 'SKIP'}")
+        print(f"  Faithfulness: {'PASS' if faithfulness_passed else 'FAIL'}\n")
 
         results.append({
             "id": qid,
@@ -100,18 +157,22 @@ def run_eval() -> None:
             "question": question,
             "expected_answer": expected,
             "answer": answer,
-            "score": score,
-            "reason": reason,
+            "retrieval_passed": retrieval_passed,
+            "correctness_passed": correctness_passed,
+            "correctness_reason": correctness_reason,
+            "faithfulness_passed": faithfulness_passed,
+            "faithfulness_reason": faithfulness_reason,
             "sources": generated["sources"],
         })
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    summary = _build_summary(results)
     output_path = RESULTS_DIR / f"eval_{timestamp}.json"
-    output_path.write_text(json.dumps(results, indent=2))
+    output_path.write_text(json.dumps({"results": results, "summary": summary}, indent=2))
     print(f"\nResults saved to {output_path}")
 
-    _print_summary(results)
+    _print_summary(summary)
 
 
 if __name__ == "__main__":

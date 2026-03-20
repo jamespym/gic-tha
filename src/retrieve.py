@@ -29,9 +29,9 @@ def _rrf(dense_results: list[tuple[int, float]],
     rrf_scores = {}
     # Accumulates chunk's score using RRF formula
     for rank, (chunk_id, _) in enumerate(dense_results):
-        rrf_scores[chunk_id] = rrf_scores.get(chunk_id, 0) + 1 / (k + rank  + 1)
+        rrf_scores[chunk_id] = rrf_scores.get(chunk_id, 0) + 1 / (k + rank + 1)
     for rank, (chunk_id, _) in enumerate(sparse_results):
-        rrf_scores[chunk_id] = rrf_scores.get(chunk_id, 0) + 1 / (k + rank  + 1)
+        rrf_scores[chunk_id] = rrf_scores.get(chunk_id, 0) + 1 / (k + rank + 1)
     
     return sorted(rrf_scores, key=rrf_scores.__getitem__, reverse=True)
 

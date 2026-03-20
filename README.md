@@ -74,3 +74,20 @@ can also add or test retrieval quality by positioning query below sources [lost 
 **Derived metric queries** (e.g. "what is the gross margin for 2022?") — gross margin is revenue / COGS, but the query only says "gross margin". FAISS/BM25 retrieve on the query string alone and have no way to know two separate chunks are needed. Fails silently if the figure isn't stated explicitly in the document. HyDE would help (hypothetical answer embeds revenue + COGS signals); query decomposition would explicitly split into sub-queries. Known limitation, not addressed in current pipeline.
 
 INGEST/RETRIEVAL IS BROKENNNN ON TABLES
+
+## Evaluation Design
+
+### Why not a single 1–5 score
+The original judge used one 1–5 score per question. Two problems: (1) ambiguous boundaries — the LLM picks 3 vs 4 inconsistently, (2) it conflates retrieval and generation failures. A score of 2/5 could mean wrong chunks retrieved, or right chunks but model hallucinated — different root causes, different fixes.
+
+### Why not grounded floats (RAGAS-style)
+Decompose expected answer into atomic facts, verify each binary, score = X/N. More principled, but adds multiple LLM calls per metric and GPT-4o-mini is unreliable at consistent decomposition in one pass. The added complexity doesn't change the diagnostic story.
+
+### What was chosen: three binary dimensions
+Results reported as pass rates across 20 questions, broken down by question type.
+
+- **Retrieval** (`question + chunks`): do the retrieved chunks contain sufficient information?
+- **Correctness** (`question + expected + answer`): is the answer factually correct per ground truth?
+- **Faithfulness** (`question + answer + chunks`): does the answer stay within the retrieved context?
+
+Binary eliminates boundary ambiguity. The diagnostic value comes from the breakdown: 89% retrieval pass on prose vs 22% on table questions is a cleaner finding than a 3.1/5 average.
