@@ -43,6 +43,25 @@ INDEX_DIR = DATA_DIR / "index"
 # ---------------------------------------------------------------------------
 LLM_MODEL = "gpt-4o-mini"
 
+JUDGE_PROMPT = """\
+You are an evaluation judge. Score the following answer against the reference answer on a scale of 1 to 5.
+
+Scoring rubric:
+5 - Fully correct: all key facts present, no hallucinations, appropriate hedging where needed
+4 - Mostly correct: minor omission or imprecision, no hallucinations
+3 - Partially correct: gets the main point but misses important detail or has a scope error
+2 - Mostly wrong: answer is in the right ballpark but key facts are wrong or fabricated
+1 - Wrong or refused: completely incorrect, hallucinated figures, or refused to answer when it should have
+
+Question: {question}
+Reference answer: {expected_answer}
+System answer: {answer}
+
+Reply with exactly this format:
+Score: <1-5>
+Reason: <one sentence>
+"""
+
 GENERATION_PROMPT = """\
 You are a precise document analyst. Answer the question using ONLY the provided sources.
 
@@ -52,7 +71,7 @@ Rules:
 - If the query explicitly names a specific entity, division, or segment, answer at that level.
 - If the answer requires a figure not present in the sources, say "The sources do not contain sufficient information to answer this fully" and explain what is missing.
 - Never infer or extrapolate beyond what the sources state.
-- If the query regards superlatives or comparison of items, but the sources list multiple without ranking them explicitly, list all candidates and state that the document does not explicitly rank them.
+- If the query regards superlatives ("biggest", "lowest", etc) or comparison of items, but the sources list multiple without ranking them explicitly, list all candidates and state that the document does not explicitly rank them.
 - Be concise. One short paragraph unless the question requires more.
 
 Question: {query}
