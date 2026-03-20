@@ -46,6 +46,7 @@ It would add value in:
 **Ingest/chunking:**
 - Tables parsed as garbled text or split across chunks — numbers lose row/column context
 - Section boundaries occasionally misdetected — chunks bleed across sections
+- Parent headings with no body text (e.g. "Corporate Social Responsibility" immediately followed by subsections) are dropped during section extraction. Subsections don't inherit the parent label, so queries using the parent term miss them. Retrieval still surfaces semantically relevant subsection content, so this is a citation labelling issue more than a factual failure.
 
 **Retrieval:**
 - Firm-wide queries surface segment-level chunks instead of consolidated statements (scope mismatch)
@@ -64,7 +65,7 @@ It would add value in:
 **Implicit ranking questions** (e.g. "what is JPMorgan's largest operational risk?") — document lists items without ranking them. Generation failure: model picks the first/most prominent and states it as fact. Partial fix: prompt engineering ("if sources don't rank, list all and say so"). Retrieval problem remains — top-k may not surface all relevant chunks. Not a separate question type; folded into cross-section questions with hedging as the expected behaviour.
 
 design decisions:
-BAAI bge small: local for data sovereignty. small, fast (no api call latency), free. product would probably use bge-large
+BAAI bge small: Open-source embeddings keep the ingestion pipeline fully local — the entire corpus passes through the embedding model at index time, making data sovereignty a hard constraint at that layer. bge-small-en-v1.5 is competitive on MTEB retrieval benchmarks, runs with no API cost or latency, and decouples index-building from any external dependency. GPT-4o-mini is used for generation because generation quality is directly user-visible and meaningfully better than comparably-sized open-source models for citation-accurate financial Q&A; a weak generator conflates retrieval failures with generation failures and makes eval uninformative. In production, this would swap to Azure OpenAI (in-region deployment) to satisfy data residency requirements while retaining generation quality.
 
 Consolidated financial statement tables (e.g. page 53 income statement) are not retrieved for firm-wide queries like "revenue growth". Segment-level narrative chunks surface instead because they contain semantically rich prose. Enrich.py will address this by prepending LLM-generated summaries to table chunks before embedding. Expected impact: high for numerical/comparison queries, low for qualitative queries.
 

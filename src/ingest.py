@@ -27,7 +27,7 @@ def _span_is_heading(span: dict, body_size: float) -> bool:
     - Larger-than-body font (> body_size + 0.5) → major heading regardless of weight
     - Body-size + bold (flags bit 4) → subsection heading
     """
-    
+
     size: float = span["size"]
     bold: bool = bool(span["flags"] & 16)
     if size > body_size + 0.5:
@@ -39,9 +39,13 @@ def _span_is_heading(span: dict, body_size: float) -> bool:
 
 def _line_is_heading(line: dict, body_size: float, sole_in_block: bool = True) -> bool:
     """Return True if every non-whitespace span in a line is a heading span.
-    
+
     sole_in_block guards against bold text embedded in a multiline paragraph.
-    All-lowercase lines are also excluded
+    All-lowercase lines are also excluded.
+
+    All-caps path: a standalone line whose text is fully uppercase (and has at
+    least 4 non-space chars) is treated as a heading regardless of bold/size.
+    This covers documents that use ALL CAPS as their only heading signal.
     """
     spans = [s for s in line["spans"] if s["text"].strip()]
     if not spans:
@@ -49,6 +53,12 @@ def _line_is_heading(line: dict, body_size: float, sole_in_block: bool = True) -
     text = "".join(s["text"] for s in spans).strip()
     if text == text.lower():
         return False
+
+    # All-caps standalone heading (e.g. "INFORMATION ABOUT OUR EXECUTIVE OFFICERS")
+    non_space = text.replace(" ", "")
+    if sole_in_block and len(non_space) >= 4 and text == text.upper():
+        return True
+
     if not all(_span_is_heading(s, body_size) for s in spans):
         return False
     # If the line qualifies only via bold-at-body-size (not oversized font),
@@ -73,8 +83,13 @@ def _bbox_overlaps(a: tuple, b: tuple) -> bool:
 # ---------------------------------------------------------------------------
 
 def _estimate_body_size(doc: fitz.Document, sample_pages: int = 20) -> float:
-    """Estimate the dominant body font size by frequency across sample pages."""
-    size_counts: dict[float, int] = {}
+    """Estimate the dominant body font size by frequency across sample pages.
+
+    Rounds to nearest 0.5 pt only for bucketing/counting; returns the average
+    raw size within the winning bucket so comparisons aren't skewed by rounding.
+    """
+    bucket_counts: dict[float, int] = {}
+    bucket_raw: dict[float, list[float]] = {}
     total = min(sample_pages, len(doc))
     for page_num in range(total):
         for block in doc[page_num].get_text("dict")["blocks"]:
@@ -83,9 +98,12 @@ def _estimate_body_size(doc: fitz.Document, sample_pages: int = 20) -> float:
             for line in block["lines"]:
                 for span in line["spans"]:
                     if span["text"].strip():
-                        rounded = round(span["size"] * 2) / 2  # nearest 0.5
-                        size_counts[rounded] = size_counts.get(rounded, 0) + 1
-    return max(size_counts, key=size_counts.__getitem__)
+                        raw = span["size"]
+                        bucket = round(raw * 2) / 2  # nearest 0.5 for grouping only
+                        bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
+                        bucket_raw.setdefault(bucket, []).append(raw)
+    winning_bucket = max(bucket_counts, key=bucket_counts.__getitem__)
+    return sum(bucket_raw[winning_bucket]) / len(bucket_raw[winning_bucket])
 
 
 def extract_sections(
