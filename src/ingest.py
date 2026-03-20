@@ -135,9 +135,7 @@ def extract_sections(
     current_page_start = 1
     current_page_end = 1
     sections: list[dict] = []
-    """
-    
-    """
+
     def _flush() -> None:
         text = " ".join(current_lines).strip()
         if text:
@@ -236,9 +234,6 @@ def extract_sections(
 # Approximate token count: 1 token ≈ 4 chars (conservative for English prose)
 _CHARS_PER_TOKEN = 4
 
-
-# def _approx_tokens(text: str) -> int:
-#     return len(text) // _CHARS_PER_TOKEN
 
 def _split_into_chunks(text: str, max_tokens: int, overlap_tokens: int) -> list[str]:
     """Split text into overlapping chunks by approximate token count.

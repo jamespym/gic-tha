@@ -62,6 +62,45 @@ Score: <1-5>
 Reason: <one sentence>
 """
 
+# ---------------------------------------------------------------------------
+# Eval metrics
+# ---------------------------------------------------------------------------
+
+RETRIEVAL_JUDGE_PROMPT = """\
+You are an evaluation judge. Answer only "Yes" or "No".
+
+Question: {question}
+
+Retrieved chunks:
+{context}
+
+Do the retrieved chunks contain sufficient information to answer the question?
+Answer: <Yes or No>
+"""
+
+CORRECTNESS_JUDGE_PROMPT = """\
+You are an evaluation judge. Answer only "Yes" or "No".
+
+Question: {question}
+Reference answer: {expected_answer}
+System answer: {answer}
+
+Is the system answer factually correct per the reference answer? Minor phrasing differences are fine — judge on facts only.
+Answer: <Yes or No>
+"""
+
+FAITHFULNESS_JUDGE_PROMPT = """\
+You are an evaluation judge. Answer only "Yes" or "No".
+
+System answer: {answer}
+
+Retrieved chunks:
+{context}
+
+Is every factual claim in the system answer supported by the retrieved chunks above?
+Answer: <Yes or No>
+"""
+
 GENERATION_PROMPT = """\
 You are a precise document analyst. Answer the question using ONLY the provided sources.
 
