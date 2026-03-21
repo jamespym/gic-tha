@@ -1,0 +1,242 @@
+[
+  {
+    "id": "Q001",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "What was the total purchase price Microsoft paid for Nuance Communications?",
+    "expected_answer": "$18.8 billion",
+    "meta": {
+      "sections": ["Note 8 – Business Combinations"],
+      "pages": [78],
+      "notes": "Normal prose"
+    }
+  },
+  {
+    "id": "Q002",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "How many jobs did Microsoft eliminate as part of the January 2023 cost-alignment announcement?",
+    "expected_answer": "Approximately 10,000 jobs",
+    "meta": {
+      "sections": ["MD&A – Economic Conditions, Challenges, and Risks"],
+      "pages": [41],
+      "notes": "Normal prose"
+    }
+  },
+  {
+    "id": "Q003",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "What change in accounting estimate did Microsoft make effective fiscal year 2023 regarding server and network equipment, and what was its impact on operating income?",
+    "expected_answer": "Increased estimated useful lives from four years to six years. This increased operating income by $3.7 billion and net income by $3.0 billion.",
+    "meta": {
+      "sections": ["MD&A – Change in Accounting Estimate"],
+      "pages": [41],
+      "notes": "Checks if LLM is able connect events to causes"
+    }
+  },
+  {
+    "id": "Q004",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "What was Microsoft's effective tax rate for fiscal year 2023, and what primarily caused the change from 2022?",
+    "expected_answer": "19% in FY2023 vs. 13% in FY2022. The increase was primarily due to a $3.3 billion net income tax benefit in Q1 FY2022 related to the transfer of intangible properties from Puerto Rico to the U.S., and a decrease in tax benefits from stock-based compensation.",
+    "meta": {
+      "sections": ["MD&A – Income Taxes"],
+      "pages": [48],
+      "notes": "Checks if LLM is able connect events to causes"
+    }
+  },
+  {
+    "id": "Q005",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What was Microsoft's total revenue for fiscal year 2023?",
+    "expected_answer": "$211,915 million ($211.9 billion).",
+    "meta": {
+      "sections": ["Income Statements", "MD&A Summary Results"],
+      "pages": [58, 44],
+      "notes": "Table extraction"
+    }
+  },
+  {
+    "id": "Q006",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What was the revenue for the Intelligent Cloud segment in fiscal year 2023?",
+    "expected_answer": "$87,907 million.",
+    "meta": {
+      "sections": ["Segment Results of Operations", "Note 19"],
+      "pages": [45, 94],
+      "notes": "Segment-level table extraction. Answer appears in multiple places"
+    }
+  },
+  {
+    "id": "Q007",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "How much did Microsoft spend on additions to property and equipment (capex) in fiscal year 2023?",
+    "expected_answer": "$28,107 million.",
+    "meta": {
+      "sections": ["Cash Flows Statement"],
+      "pages": [61],
+      "notes": "Large table extraction."
+    }
+  },
+  {
+    "id": "Q008",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "How much was Microsoft's common stock and paid-in capital as of 2023?",
+    "expected_answer": "$86,939 million.",
+    "meta": {
+      "sections": ["Stockholders' Equity Statements"],
+      "pages": [62],
+      "notes": "Large table extraction. Answer on first line"
+    }
+  },
+  {
+    "id": "Q009",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What was the revenue from Server products and cloud services in fiscal year 2023?",
+    "expected_answer": "$79,970 million.",
+    "meta": {
+      "sections": ["Note 19 – Revenue by product/service"],
+      "pages": [95],
+      "notes": "Product level table"
+    }
+  },
+  {
+    "id": "Q010",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which reportable segment had the highest operating income in fiscal year 2023?",
+    "expected_answer": "Intelligent Cloud, with $37,884 million. Productivity and Business Processes was second at $34,189 million, and More Personal Computing was $16,450 million.",
+    "meta": {
+      "sections": ["Segment Results", "Note 19"],
+      "pages": [45, 94],
+      "notes": "Superlative query over a table, checks if LLM can rank or hedge without explicit rank"
+    }
+  },
+  {
+    "id": "Q011",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which product/service category had the greatest growth in revenue from FY2022 to FY2023, and how much did it grow by?",
+    "expected_answer": "Server products and cloud services, with growth of approximately 19%",
+    "meta": {
+      "sections": ["Note 19 – Revenue by product"],
+      "pages": [95],
+      "notes": "Superlative requiring calculation. "
+    }
+  },
+  {
+    "id": "Q012",
+    "type": "superlative",
+    "source_type": "table+prose",
+    "question": "Which segment experienced a decline in revenue in fiscal year 2023 compared to 2022?",
+    "expected_answer": "More Personal Computing, which decreased from $59,941M to $54,734M (a 9% decline).",
+    "meta": {
+      "sections": ["Segment Results"],
+      "pages": [45],
+      "notes": "Requires retrieval of chunks with a less specific anchor word"
+    }
+  },
+  {
+    "id": "Q013",
+    "type": "negative",
+    "source_type": null,
+    "question": "What was Microsoft's revenue from only its Azure cloud service?",
+    "expected_answer": "The document does not contain Azure revenue separately.",
+    "meta": {
+      "sections": [],
+      "pages": [],
+      "notes": "Hallucination resistance on exact matches"
+    }
+  },
+  {
+    "id": "Q014",
+    "type": "negative",
+    "source_type": null,
+    "question": "How many employees does Microsoft have as of June 30, 2023?",
+    "expected_answer": "The exact figure is not provided.",
+    "meta": {
+      "sections": [],
+      "pages": [],
+      "notes": "Hallucination resistance"
+    }
+  },
+  {
+    "id": "Q015",
+    "type": "cross_section",
+    "source_type": "table+prose",
+    "question": "How does Microsoft's goodwill balance as of June 30, 2023 break down by segment, and which acquisition was the largest contributor to the Intelligent Cloud segment's goodwill?",
+    "expected_answer": "Total goodwill: $67,886M. By segment: Productivity and Business Processes $24,775M, Intelligent Cloud $30,469M, More Personal Computing $12,642M. Nuance was the largest contributor to Intelligent Cloud's goodwill, adding $16,326M.",
+    "meta": {
+      "sections": ["Note 9 – Goodwill", "Note 8 – Business Combinations"],
+      "pages": [78, 79],
+      "notes": "Requires retrieval from two different notes and connecting them"
+    }
+  },
+  {
+    "id": "Q016",
+    "type": "cross_section",
+    "source_type": "table+prose",
+    "question": "What was Microsoft Cloud revenue in FY2023, and what percentage of total company revenue did it represent?",
+    "expected_answer": "Microsoft Cloud revenue was $111.6 billion. Total revenue was $211.9 billion, so Cloud was approximately 53% of total revenue. The 53% figure is not stated explicitly — it requires division.",
+    "meta": {
+      "sections": ["MD&A Overview", "Income Statement / MD&A Summary"],
+      "pages": [40, 44, 58],
+      "notes": "Cross-section retrieval and calculation."
+    }
+  },
+  {
+    "id": "Q017",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's gross profit margin for fiscal year 2023?",
+    "expected_answer": "Approximately 68.9% OR Gross profit margin was $146,052M on revenue of $211,915M, yielding approximately 68.9%.",
+    "meta": {
+      "sections": ["Income Statement", "MD&A Summary"],
+      "pages": [58, 44],
+      "notes": "Understanding of GPM, calculation involving 2 separate lines in the same table"
+    }
+  },
+  {
+    "id": "Q018",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was the year-over-year change in short-term investments from 2022 to 2023?",
+    "expected_answer": "Short-term investments decreased from $90,826M to $76,558M, a decrease of $14,268M.",
+    "meta": {
+      "sections": ["Balance Sheet", "Cash Flows Statement"],
+      "pages": [60, 61],
+      "notes": "Multi-hop across two time periods in the same table."
+    }
+  },
+  {
+    "id": "Q019",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "How much of the total contractual obligations due in fiscal year 2024 is attributable to purchase commitments?",
+    "expected_answer": "Total contractual obligations due in 2024 were $89,557M, of which $64,703M was purchase commitments — roughly 72%.",
+    "meta": {
+      "sections": ["MD&A – Material Cash Requirements / Contractual Obligations"],
+      "pages": [51],
+      "notes": "Multiple extraction from a complex multi column table"
+    }
+  },
+  {
+    "id": "Q020",
+    "type": "multi_hop",
+    "source_type": "table+prose",
+    "question": "What were Microsoft's total operating expenses (R&D + Sales & Marketing + G&A) for FY2023, and how did each component change year-over-year as a percentage?",
+    "expected_answer": "R&D: $27,195M (+11%), Sales & Marketing: $22,759M (+4%), G&A: $7,575M (+28%). Total opex: $57,529M. The individual figures and percentage changes are each stated separately in the MD&A.",
+    "meta": {
+      "sections": ["MD&A – Operating Expenses"],
+      "pages": [47, 48],
+      "notes": "Multi-part extraction from three adjacent but separate sub-sections"
+    }
+  }
+]
