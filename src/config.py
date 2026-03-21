@@ -67,7 +67,7 @@ Reason: <one sentence>
 # ---------------------------------------------------------------------------
 
 RETRIEVAL_JUDGE_PROMPT = """\
-You are an evaluation judge. Answer only "Yes" or "No".
+You are an evaluation judge.
 
 Question: {question}
 
@@ -75,22 +75,26 @@ Retrieved chunks:
 {context}
 
 Do the retrieved chunks contain sufficient information to answer the question?
+Format your response in this manner:
 Answer: <Yes or No>
+Explanation: <short explanation>
 """
 
 CORRECTNESS_JUDGE_PROMPT = """\
-You are an evaluation judge. Answer only "Yes" or "No".
+You are an evaluation judge.
 
 Question: {question}
 Reference answer: {expected_answer}
 System answer: {answer}
 
-Is the system answer factually correct per the reference answer? Minor phrasing differences are fine — judge on facts only.
+Is the system answer factually correct per the reference answer? Minor phrasing differences are fine, judge based on facts only.
+Format your response in this manner:
 Answer: <Yes or No>
+Explanation: <short explanation>
 """
 
 FAITHFULNESS_JUDGE_PROMPT = """\
-You are an evaluation judge. Answer only "Yes" or "No".
+You are an evaluation judge.
 
 System answer: {answer}
 
@@ -98,7 +102,9 @@ Retrieved chunks:
 {context}
 
 Is every factual claim in the system answer supported by the retrieved chunks above?
+Format your response in this manner:
 Answer: <Yes or No>
+Explanation: <short explanation>
 """
 
 GENERATION_PROMPT = """\

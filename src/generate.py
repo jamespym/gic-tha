@@ -47,7 +47,7 @@ def generate(query: str, chunks: list[Chunk]) -> dict:
         {
             "section": chunk.section,
             "pages": f"{chunk.page_start}-{chunk.page_end}",
-            "excerpt": chunk.text[:200],
+            "excerpt": chunk.text[:350],
         }
         for chunk in chunks
     ]

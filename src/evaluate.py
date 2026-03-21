@@ -29,10 +29,11 @@ def _call_judge(prompt: str) -> tuple[bool, str]:
         temperature=0,
     )
     text = response.choices[0].message.content.strip()
-    answer_match = re.search(r"\b(Yes|No)\b", text, re.IGNORECASE)
-
+    answer_match = re.search(r"Answer:\s*(Yes|No)", text, re.IGNORECASE)
+    explanation_match = re.search(r"Explanation:\s*(.+)", text, re.IGNORECASE)
     passed = answer_match.group(1).lower() == "yes" if answer_match else False
-    return passed, text
+    reason = explanation_match.group(1).strip() if explanation_match else text
+    return passed, reason
 
 
 def _score_retrieval(question: str, chunks: list[Chunk]) -> tuple[bool, str]:
@@ -60,62 +61,47 @@ def _score_faithfulness(answer: str, chunks: list[Chunk]) -> tuple[bool, str]:
     return _call_judge(prompt)
 
 
-def _print_summary(results: list[dict]) -> None:
+def _build_summary(results: list[dict]) -> dict:
+    """Compute all summary tables as a serialisable dict."""
+    def _pass_rate(items: list[bool]) -> dict:
+        return {"passed": sum(items), "total": len(items), "pct": round(sum(items) / len(items) * 100)}
+
+    def _group(dim: str, key: str) -> dict:
+        groups: dict[str, list[bool]] = {}
+        for r in results:
+            if r[dim] is not None:
+                groups.setdefault(r[key] or "n/a", []).append(r[dim])
+        return {k: _pass_rate(v) for k, v in sorted(groups.items())}
+
     dims = ["retrieval_passed", "correctness_passed", "faithfulness_passed"]
+    return {
+        "by_dimension":                  {dim: _pass_rate([r[dim] for r in results if r[dim] is not None]) for dim in dims},
+        "retrieval_by_question_type":    _group("retrieval_passed",    "type"),
+        "retrieval_by_source_type":      _group("retrieval_passed",    "source_type"),
+        "correctness_by_question_type":  _group("correctness_passed",  "type"),
+        "correctness_by_source_type":    _group("correctness_passed",  "source_type"),
+        "faithfulness_by_question_type": _group("faithfulness_passed", "type"),
+    }
+
+
+def _print_summary(summary: dict) -> None:
     labels = {"retrieval_passed": "Retrieval", "correctness_passed": "Correctness", "faithfulness_passed": "Faithfulness"}
 
     print("\n=== Pass rates by dimension ===")
-    for dim in dims:
-        scores = [r[dim] for r in results if r[dim] is not None]
-        pct = sum(scores) / len(scores) * 100
-        print(f"  {labels[dim]:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
+    for dim, s in summary["by_dimension"].items():
+        print(f"  {labels[dim]:<15} {s['passed']}/{s['total']} passed ({s['pct']}%)")
 
-    print("\n=== Retrieval pass rate by question type ===")
-    by_type_r: dict[str, list[bool]] = {}
-    for r in results:
-        if r["retrieval_passed"] is not None:
-            by_type_r.setdefault(r["type"], []).append(r["retrieval_passed"])
-    for t, scores in sorted(by_type_r.items()):
-        pct = sum(scores) / len(scores) * 100
-        print(f"  {t:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
-
-    print("\n=== Retrieval pass rate by source_type ===")
-    by_source: dict[str, list[bool]] = {}
-    for r in results:
-        if r["retrieval_passed"] is not None:
-            st = r["source_type"] or "n/a"
-            by_source.setdefault(st, []).append(r["retrieval_passed"])
-    for st, scores in sorted(by_source.items()):
-        pct = sum(scores) / len(scores) * 100
-        print(f"  {st:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
-
-    print("\n=== Correctness pass rate by question type ===")
-    by_type_c: dict[str, list[bool]] = {}
-    for r in results:
-        if r["correctness_passed"] is not None:
-            by_type_c.setdefault(r["type"], []).append(r["correctness_passed"])
-    for t, scores in sorted(by_type_c.items()):
-        pct = sum(scores) / len(scores) * 100
-        print(f"  {t:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
-
-    print("\n=== Correctness pass rate by source_type ===")
-    by_source_c: dict[str, list[bool]] = {}
-    for r in results:
-        if r["correctness_passed"] is not None:
-            st = r["source_type"] or "n/a"
-            by_source_c.setdefault(st, []).append(r["correctness_passed"])
-    for st, scores in sorted(by_source_c.items()):
-        pct = sum(scores) / len(scores) * 100
-        print(f"  {st:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
-
-    print("\n=== Faithfulness pass rate by question type ===")
-    by_type_f: dict[str, list[bool]] = {}
-    for r in results:
-        if r["faithfulness_passed"] is not None:
-            by_type_f.setdefault(r["type"], []).append(r["faithfulness_passed"])
-    for t, scores in sorted(by_type_f.items()):
-        pct = sum(scores) / len(scores) * 100
-        print(f"  {t:<15} {sum(scores)}/{len(scores)} passed ({pct:.0f}%)")
+    sections = [
+        ("=== Retrieval pass rate by question type ===",    "retrieval_by_question_type"),
+        ("=== Retrieval pass rate by source_type ===",      "retrieval_by_source_type"),
+        ("=== Correctness pass rate by question type ===",  "correctness_by_question_type"),
+        ("=== Correctness pass rate by source_type ===",    "correctness_by_source_type"),
+        ("=== Faithfulness pass rate by question type ===", "faithfulness_by_question_type"),
+    ]
+    for header, key in sections:
+        print(f"\n{header}")
+        for label, s in summary[key].items():
+            print(f"  {label:<15} {s['passed']}/{s['total']} passed ({s['pct']}%)")
 
 
 def run_eval() -> None:
@@ -139,7 +125,7 @@ def run_eval() -> None:
         answer = generated["answer"]
         print(f"  Answer: {answer}")
 
-        retrieval_passed, _ = _score_retrieval(question, top_chunks)
+        retrieval_passed, retrieval_reason = _score_retrieval(question, top_chunks)
         faithfulness_passed, faithfulness_reason = _score_faithfulness(answer, top_chunks)
         if is_negative:
             correctness_passed, correctness_reason = None, "skipped — negative question"
@@ -158,6 +144,7 @@ def run_eval() -> None:
             "expected_answer": expected,
             "answer": answer,
             "retrieval_passed": retrieval_passed,
+            "retrieval_reason": retrieval_reason,
             "correctness_passed": correctness_passed,
             "correctness_reason": correctness_reason,
             "faithfulness_passed": faithfulness_passed,

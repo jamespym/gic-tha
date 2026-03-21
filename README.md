@@ -52,6 +52,7 @@ It would add value in:
 - Firm-wide queries surface segment-level chunks instead of consolidated statements (scope mismatch)
 - Numerical queries retrieve prose summaries of tables rather than the tables themselves
 - Short boilerplate chunks ("None.") rank high when query has no strong signal
+- Comparison/superlative queries fail retrieval because they carry no named-entity anchor (e.g. "which segment declined" doesn't mention "More Personal Computing" or "Intelligent Cloud"). The embedding has no strong signal to pull any specific segment's chunk, so entirely irrelevant chunks surface instead. This is distinct from a vocabulary mismatch — "decline" and "decreased" are near-synonyms that bge-small handles correctly. The root cause is that answering requires retrieving chunks for all segments simultaneously and comparing them, which single-query dense retrieval cannot do. A higher top-k partially mitigates this by increasing the chance relevant chunks appear; a proper fix would be query decomposition (detect comparison intent, issue one sub-query per segment). Not addressed in current pipeline.
 
 **Generation:**
 - Scope errors — answers at wrong level of aggregation (segment vs firm-wide), partly a retrieval problem, partly prompt
@@ -91,3 +92,7 @@ Results reported as pass rates across 20 questions, broken down by question type
 - **Faithfulness** (`question + answer + chunks`): does the answer stay within the retrieved context?
 
 Binary eliminates boundary ambiguity. The diagnostic value comes from the breakdown: 89% retrieval pass on prose vs 22% on table questions is a cleaner finding than a 3.1/5 average.
+
+### top_k ablation (5 → 10)
+
+Increasing reranker top_k from 5 to 10 improved retrieval from 70% to 85% (14→17/20), confirming that relevant chunks existed in the index but weren't surfacing. However, correctness only moved from 50% to 61% (9→11/18), and cases where retrieval passes but correctness fails increased from 5 to 6. More chunks means more competing numbers in the prompt — GPT-4o-mini grabs the wrong figure even when the right one is present. The remaining failures are now almost entirely generation-side: table correctness is still 50%, superlative correctness 33%. The bottleneck has shifted from retrieval to number disambiguation at generation. The fix is not more chunks but better generation — e.g. instructing the model to prefer the most specific figure that directly matches the query, or using a stronger model as generator.

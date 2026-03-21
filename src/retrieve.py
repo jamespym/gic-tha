@@ -48,7 +48,7 @@ def _rerank(query: str, candidates: list[int], chunks: list[Chunk], top_k: int) 
     return [chunks[candidates[i]] for i in top_indices]
 
 def retrieve(query: str, faiss_index: faiss.Index, bm25_index: BM25Okapi,
-             chunks: list[Chunk], retrieval_k: int = 50, top_k: int = 5) -> list[Chunk]:
+             chunks: list[Chunk], retrieval_k: int = 50, top_k: int = 10) -> list[Chunk]:
     dense_results = _dense_retrieve(query, faiss_index, retrieval_k)
     sparse_results = _sparse_retrieve(query, bm25_index, retrieval_k)
     hybrid_results = _rrf(dense_results, sparse_results)
