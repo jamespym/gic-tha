@@ -126,10 +126,9 @@ def run_eval(questions_file: str = "questions.json") -> None:
         faithfulness_passed, faithfulness_reason = _score_faithfulness(answer, top_chunks)
         if is_negative:
             retrieval_passed, retrieval_reason = None, "skipped — negative question"
-            correctness_passed, correctness_reason = None, "skipped — negative question"
         else:
             retrieval_passed, retrieval_reason = _score_retrieval(question, top_chunks)
-            correctness_passed, correctness_reason = _score_correctness(question, expected, answer)
+        correctness_passed, correctness_reason = _score_correctness(question, expected, answer)
 
         print(f"  Retrieval:    {'PASS' if retrieval_passed else 'FAIL' if retrieval_passed is not None else 'SKIP'}")
         print(f"  Correctness:  {'PASS' if correctness_passed else 'FAIL' if correctness_passed is not None else 'SKIP'}")

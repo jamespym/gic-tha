@@ -16,11 +16,11 @@
     "type": "superlative",
     "source_type": "table",
     "question": "Which of the three fiscal years reported (2021, 2022, 2023) had the highest net income?",
-    "expected_answer": "Fiscal year 2022 at $72,738M. FY2023 was $72,361M and FY2021 was $61,271M.",
+    "expected_answer": "Fiscal year 2022 at $72,738M.",
     "meta": {
       "sections": ["Income Statements"],
       "pages": [58],
-      "notes": "Adversarial — most recent year is not the highest; tests if model defaults to FY2023"
+      "notes": "Most recent year is not the highest"
     }
   },
   {
@@ -148,7 +148,7 @@
     "type": "superlative",
     "source_type": "table",
     "question": "Which intangible asset category had the largest accumulated amortization as of June 30, 2023?",
-    "expected_answer": "Technology-based at $7,589M. Customer-related was $4,047M, marketing-related was $2,473M, and contract-based was $15M.",
+    "expected_answer": "Technology-based at $7,589M.",
     "meta": {
       "sections": ["Note 10 – Intangible Assets"],
       "pages": [80],
@@ -231,8 +231,8 @@
     "id": "Q060",
     "type": "cross_section",
     "source_type": "table+prose",
-    "question": "What was the largest functional employee category by headcount as of June 30, 2023, and how does its headcount compare to the total R&D expense in fiscal year 2023?",
-    "expected_answer": "Operations was the largest category at 89,000 employees. R&D had 72,000 employees. Separately, R&D expense was $27,195M in FY2023",
+    "question": "What was the largest functional employee category by headcount as of June 30, 2023, and what was the total R&D expense in fiscal year 2023?",
+    "expected_answer": "Operations was the largest category at 89,000 employees. R&D expense for FY2023 was $27,195M. Note: the R&D headcount was 72,000 employees — R&D headcount and R&D expense are distinct figures.",
     "meta": {
       "sections": ["Human Capital Resources", "MD&A – Research and Development"],
       "pages": [10, 47],

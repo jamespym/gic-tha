@@ -103,6 +103,7 @@ Rules:
 - If the query regards superlatives ("biggest", "lowest", etc) or comparison of items, but the sources list multiple with no way of ranking them explicitly, list all candidates and state that the document does not explicitly rank them.
 - Be concise. One short paragraph unless the question requires more.
 - Match the level of granularity the question asks for: If it names a specific entity, segment, or item, prefer information at that level. If it's ambiguous, prefer the highest-level aggregate available.
+
 Question: {query}
 
 Sources:

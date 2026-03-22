@@ -12,7 +12,6 @@ def _print_result(result: dict) -> None:
     print("\nSources:")
     for s in result["sources"]:
         print(f"  [{s['pages']}] {s['section']}")
-        print(f"      {s['excerpt']}...")
 
 
 def ingest_main(pdf_path: Path) -> None:

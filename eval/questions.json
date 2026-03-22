@@ -390,7 +390,7 @@
     "type": "superlative",
     "source_type": "table",
     "question": "What was the largest component of property and equipment by gross carrying value as of June 30, 2023?",
-    "expected_answer": "Computer equipment and software at $74,961 million, followed by buildings and improvements at $68,465 million.",
+    "expected_answer": "Computer equipment and software at $74,961 million.",
     "meta": {
       "sections": [
         "Note 7 – Property and Equipment"
@@ -422,7 +422,7 @@
     "type": "superlative",
     "source_type": "table",
     "question": "Which category of intangible assets had the highest net carrying amount as of June 30, 2023?",
-    "expected_answer": "Technology-based at $3,656 million net. Customer-related was $3,234 million, marketing-related was $2,462 million, and contract-based was $14 million.",
+    "expected_answer": "Technology-based at $3,656 million net.",
     "meta": {
       "sections": [
         "Note 10 – Intangible Assets"

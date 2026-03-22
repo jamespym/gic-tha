@@ -62,7 +62,7 @@ if __name__ == "__main__":
     from pathlib import Path
 
     chunks, faiss_index, bm25_index = load_index()
-    query = sys.argv[1] if len(sys.argv) > 1 else "What is the revenue growth?"
+    query = sys.argv[1] if len(sys.argv) > 1 else "What is the main topic of this document?"
     results = retrieve(query, faiss_index, bm25_index, chunks)
     for c in results:
         print(f"--- {c.section} | Pages {c.page_start}-{c.page_end} ---")

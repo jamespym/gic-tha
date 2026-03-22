@@ -16,9 +16,13 @@ venv/
 data/*.pdf
 *.faiss
 *.pkl
+faiss.index
 
 # Evaluation / Output
 eval/results/*.json
+debug_page.py
+README2.md
+README3.md
 
 DECISIONS.md
 DECISION_LOG.md

@@ -4,23 +4,15 @@ from sentence_transformers import SentenceTransformer
 import faiss
 from rank_bm25 import BM25Okapi
 import pickle
-import numpy as np
 from . import config
 from . import ingest
 
-_embedding_model = SentenceTransformer("BAAI/bge-small-en-v1.5")
-
-
-# Prepend headings
-def _prepare_text(chunk: Chunk) -> str:
-    prepended_text = f"Section: {chunk.section} | Pages {chunk.page_start}-{chunk.page_end}\n{chunk.text}"
-    return prepended_text
-
 # FAISS - semantic search
 def build_faiss_index(chunks: list[Chunk]) -> faiss.Index:
-    texts = [_prepare_text(chunk) for chunk in chunks]
+    model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+    texts = [f"Section: {chunk.section} | Pages {chunk.page_start}-{chunk.page_end}\n{chunk.text}" for chunk in chunks]
 
-    vectors = _embedding_model.encode(texts, normalize_embeddings=True)
+    vectors = model.encode(texts, normalize_embeddings=True)
     
     dim = vectors.shape[1]
     index = faiss.IndexFlatIP(dim) #faiss.Index

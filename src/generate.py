@@ -61,11 +61,11 @@ if __name__ == "__main__":
     from .retrieve import retrieve
 
     chunks_all, faiss_index, bm25_index = load_index()
-    query = sys.argv[1] if len(sys.argv) > 1 else "What is the total net revenue?"
+    query = sys.argv[1] if len(sys.argv) > 1 else "What is the main topic of this document?"
     top_chunks = retrieve(query, faiss_index, bm25_index, chunks_all)
     result = generate(query, top_chunks)
 
     print(result["answer"])
     print()
     for s in result["sources"]:
-        print(f"  [{s['pages']}] {s['section']}: {s['excerpt'][:400]}...")
+        print(f"  [{s['pages']}] {s['section']}: {s['excerpt']}...")
