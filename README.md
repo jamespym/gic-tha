@@ -57,6 +57,8 @@ Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (
 ## Setup
 **Requirements:** Python 3.11+
 ```bash
+git clone <repo-url>
+cd <repo-name>
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
@@ -66,8 +68,6 @@ Create a `.env` file in the project root:
 ```
 OPENAI_API_KEY=sk-...
 ```
-
-Place your PDF in the `data/` directory before ingesting.
 
 The first run will download the embedding model (~130 MB) and cross-encoder (~85 MB) from Hugging Face.
 
