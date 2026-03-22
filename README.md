@@ -69,7 +69,7 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=sk-...
 ```
 
-The first run will download the embedding model (~130 MB) and cross-encoder (~85 MB) from Hugging Face.
+The first run will download the embedding model and cross-encoder from Hugging Face.
 
 ## How to run
 **Step 1 — Ingest a document** (run once per document):
