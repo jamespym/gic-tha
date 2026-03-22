@@ -1,6 +1,6 @@
 # Long Document Q&A System
 
-A retrieval-augmented generation (RAG) system for answering questions over a single long document (100+ pages), with cited evidence. Tested on the Microsoft FY2023 10-K (224 pages).
+A retrieval-augmented generation (RAG) system for answering questions over a single long document (100+ pages), with cited evidence. Tested on the Microsoft FY2023 10-K (116 pages).
 
 ---
 
@@ -12,10 +12,10 @@ Long documents cannot be stuffed into an LLM context window without potential co
 ## System design
 ![System Architecture Diagram](rag_diagram.png)
 **Ingestion**. 
-PyMuPDF extracts per-span font size and bold flags, which are sufficient to detect headings typographically. Header/footer zones and footnote-size text are filtered. Tables are detected via PyMuPDF's `find_tables()` and kept as atomic text blocks, preventing table header cells from being misread as section headings. Each chunk carries section, page_start, and page_end through to the final answer. These typographic heuristics can be tuned in config.py and are representative of most single column documents. 500-token chunks with 100-token overlap was chosen as a default for documents where context preservation across chunks matters.
+PyMuPDF extracts per-span font size and bold flags, which are sufficient to detect headings typographically. Header/footer zones and footnote-size text are filtered. Tables are detected via PyMuPDF's `find_tables()` and kept as atomic text blocks, preventing table header cells from being misread as section headings. Each chunk carries section, page_start, and page_end through to the final answer. These typographic heuristics can be tuned in config.py and generalize to most single-column documents. 500-token chunks with 100-token overlap was chosen as a default for documents where context preservation across chunks matters.
 
 **Indexing**. 
-BAAI bge-small-en-v1.5 was used as the embedding model as it is fast, free, and is fully local for IP leakage concerns. In production, this can be swapped for Azure OpenAI.  
+BAAI/bge-small-en-v1. was used as the embedding model as it is fast, free, and is fully local for IP leakage concerns. In production, this can be swapped for Azure OpenAI.  
 FAISS and BM25 were chosen as they complement each others' weaknesses and are the industry standards for semantic and syntactic search.  
 Section and pages are prepended at embedding time for FAISS, but no prepend for BM25 to avoid polluting keyword matching.
 
@@ -45,8 +45,15 @@ Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (
 | Negative | 3 | 4 | 75% |
 | Superlative | 5 | 6 | 83% |
 
-**Ablation:** top-k 5 -> 10: Correctness 80% -> 88%
+**Table 3 - Adversarial Question Set:**
+| Dimension | Passed | Total | Pass Rate |
+|---|---|---|---|
+| Retrieval | 16 | 18 | 89% |
+| Correctness | 13 | 20 | 65% |
+| Faithfulness | 20 | 20 | 100% |
 
+**Ablation:** top-k 5 -> 10: Correctness 80% -> 88%
+ 
 ## Setup
 **Requirements:** Python 3.11+
 ```bash
@@ -60,7 +67,7 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=sk-...
 ```
 
-First run will download the embedding model (~130 MB) and cross-encoder (~85 MB) from Hugging Face.
+The first run will download the embedding model (~130 MB) and cross-encoder (~85 MB) from Hugging Face.
 
 ## How to run
 **Step 1 — Ingest a document** (run once per document):
@@ -93,4 +100,4 @@ Results are written to `eval/results/eval_{timestamp}.json`.
 
 - **Structured table extraction.** Replace atomic table-block ingestion with structured row/column parsing with VLMs or MinerU. Fixes the dominant failure class, which are numerical queries where numbers lose their row/column context after chunking.
 - **Query decomposition.** Detect comparison or superlative intent and issue one sub-query per entity before merging results. Fixes failures on queries with no named anchor (e.g. "which segment declined?") where single-query dense retrieval has no signal to pull any specific chunk. Q20 is a good example of where the current model struggles and where query decomposition will benefit the most.
-- **Contextual enrichment.** Prepend LLM-generated section summaries to chunks before embedding, so each chunk carries its surrounding context at retrieval time. This is akin to the approach used in Anthropic's contextual retrieval technique, without sending the whole document in.
+- **Contextual enrichment.** Prepend LLM-generated section summaries to chunks before embedding, so each chunk carries its surrounding context at retrieval time. This is akin to the approach used in Anthropic's contextual retrieval technique, without the entire document to the LLM per call.
