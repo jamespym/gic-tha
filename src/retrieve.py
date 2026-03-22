@@ -39,7 +39,7 @@ def _rerank(query: str, candidates: list[int], chunks: list[Chunk], top_k: int) 
     """
     top_indices: index of the scores array
     candidates: list of chunk ids
-    candidates[i]: 
+    candidates[i]: chunk id
     """
     pairs = [(query, chunks[i].text) for i in candidates]
     scores = _cross_encoder.predict(pairs)  # Relevance score
@@ -68,10 +68,3 @@ if __name__ == "__main__":
         print(f"--- {c.section} | Pages {c.page_start}-{c.page_end} ---")
         print(c.text[:200])
         print()
-    
-    print("-----------------------------------------------------")
-    chunks, faiss_index, bm25_index = load_index()
-    p53_chunks = [c for c in chunks if c.page_start <= 53 <= c.page_end]
-    for c in p53_chunks:
-        print(c.text)
-        print("---")

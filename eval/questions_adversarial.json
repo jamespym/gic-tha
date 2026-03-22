@@ -1,0 +1,242 @@
+[
+  {
+    "id": "Q041",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's net income margin for fiscal year 2023?",
+    "expected_answer": "Approximately 34.2%. Net income was $72,361M on total revenue of $211,915M.",
+    "meta": {
+      "sections": ["Income Statements"],
+      "pages": [58],
+      "notes": "Division of two non-adjacent income statement lines"
+    }
+  },
+  {
+    "id": "Q042",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which of the three fiscal years reported (2021, 2022, 2023) had the highest net income?",
+    "expected_answer": "Fiscal year 2022 at $72,738M. FY2023 was $72,361M and FY2021 was $61,271M.",
+    "meta": {
+      "sections": ["Income Statements"],
+      "pages": [58],
+      "notes": "Adversarial — most recent year is not the highest; tests if model defaults to FY2023"
+    }
+  },
+  {
+    "id": "Q043",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's free cash flow for fiscal year 2023?",
+    "expected_answer": "$59,475M. Net cash from operations was $87,582M minus capex of $28,107M.",
+    "meta": {
+      "sections": ["Cash Flows Statements"],
+      "pages": [61],
+      "notes": "Requires subtracting two lines from the cash flow statement. Requires decomposing to: net cash - capex (in pdf as Additions to property and equipment)"
+    }
+  },
+  {
+    "id": "Q044",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was the year-over-year change in total long-term debt face value from June 30, 2022 to June 30, 2023?",
+    "expected_answer": "Total face value decreased from $55,511M to $52,866M, a reduction of $2,645M.",
+    "meta": {
+      "sections": ["Note 11 – Debt"],
+      "pages": [81],
+      "notes": "Non-headline row in debt table; tests extraction of 'Total face value' vs 'Total debt'"
+    }
+  },
+  {
+    "id": "Q045",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's dividend payout ratio for fiscal year 2023?",
+    "expected_answer": "Approximately 28.0%.",
+    "meta": {
+      "sections": ["Note 16 – Stockholders' Equity", "Income Statements"],
+      "pages": [90, 58],
+      "notes": "Cross two statements and payout ratio not labelled in the document"
+    }
+  },
+  {
+    "id": "Q046",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's total operating expense ratio (R&D + Sales & Marketing + G&A as a percentage of revenue) for fiscal year 2023?",
+    "expected_answer": "Approximately 27.2%. R&D $27,195M + Sales & Marketing $22,759M + G&A $7,575M = $57,529M, on revenue of $211,915M.",
+    "meta": {
+      "sections": ["Income Statements"],
+      "pages": [58],
+      "notes": "Requires summing three lines then dividing by revenue; ratio not stated"
+    }
+  },
+  {
+    "id": "Q047",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's debt-to-equity ratio as of June 30, 2023?",
+    "expected_answer": "Approximately 22.9%. Total debt was $47,237M and total stockholders' equity was $206,223M.",
+    "meta": {
+      "sections": ["Balance Sheets", "Note 11 – Debt"],
+      "pages": [60, 81],
+      "notes": "Ratio not stated; requires connecting balance sheet equity to net debt figure in Note 11"
+    }
+  },
+  {
+    "id": "Q048",
+    "type": "multi_hop",
+    "source_type": "table+prose",
+    "question": "What was Microsoft's revenue per full-time employee for fiscal year 2023?",
+    "expected_answer": "Approximately $959K per employee. Total revenue was $211,915M and full-time headcount was approximately 221,000.",
+    "meta": {
+      "sections": ["Human Capital Resources", "Income Statements"],
+      "pages": [10, 58],
+      "notes": "Cross two distant sections; employee count is far from financial statements"
+    }
+  },
+  {
+    "id": "Q049",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which segment had the highest operating income margin in fiscal year 2023?",
+    "expected_answer": "Productivity and Business Processes at approximately 49.4% ($34,189M on $69,274M revenue). Intelligent Cloud was approximately 43.1% and More Personal Computing was approximately 30.1%.",
+    "meta": {
+      "sections": ["Segment Results of Operations", "Note 19"],
+      "pages": [45, 94],
+      "notes": "Margins not stated; requires dividing operating income by revenue for each segment"
+    }
+  },
+  {
+    "id": "Q050",
+    "type": "cross_section",
+    "source_type": "table+prose",
+    "question": "In fiscal year 2023, Ireland generated 81% of Microsoft's foreign income before tax. What does that imply in dollar terms, and what were Microsoft's total long-lived assets in Ireland?",
+    "expected_answer": "Foreign income before tax was $36,394M, so Ireland's implied share was approximately $29,479M. Microsoft's long-lived assets in Ireland were $16,359M as of June 30, 2023.",
+    "meta": {
+      "sections": ["Note 12 – Income Taxes", "Note 19 – Geographic Data"],
+      "pages": [83, 95],
+      "notes": "Percentage is in prose; dollar base and asset figure are in separate tables across two different notes"
+    }
+  },
+  {
+    "id": "Q051",
+    "type": "cross_section",
+    "source_type": "table",
+    "question": "Which segment had the highest unearned revenue as of June 30, 2023, and does that match the segment with the highest total revenue?",
+    "expected_answer": "Productivity and Business Processes had the highest unearned revenue at $27,572M, followed by Intelligent Cloud at $21,563M. However, Intelligent Cloud had the highest total revenue at $87,907M. The rankings differ.",
+    "meta": {
+      "sections": ["Note 13 – Unearned Revenue", "Note 19 – Segment Information"],
+      "pages": [86, 94],
+      "notes": "Requires connecting two separate segment tables across different notes"
+    }
+  },
+  {
+    "id": "Q052",
+    "type": "cross_section",
+    "source_type": "table",
+    "question": "How did stock-based compensation expense change from fiscal year 2022 to 2023, and what was the related income tax benefit in fiscal year 2023?",
+    "expected_answer": "SBC increased from $7,502M to $9,611M, a rise of $2,109M or approximately 28%. The related income tax benefit in FY2023 was $1,651M.",
+    "meta": {
+      "sections": ["Note 18 – Employee Stock and Savings Plans", "Cash Flows Statements"],
+      "pages": [91, 61],
+      "notes": "SBC dollar and tax benefit in Note 18; year-over-year comparison requires cross-referencing cash flow or prior year note"
+    }
+  },
+  {
+    "id": "Q053",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which intangible asset category had the largest accumulated amortization as of June 30, 2023?",
+    "expected_answer": "Technology-based at $7,589M. Customer-related was $4,047M, marketing-related was $2,473M, and contract-based was $15M.",
+    "meta": {
+      "sections": ["Note 10 – Intangible Assets"],
+      "pages": [80],
+      "notes": "Superlative over a multi-column table; accumulated amortization column, not net or gross"
+    }
+  },
+  {
+    "id": "Q054",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which year in the debt maturity schedule (fiscal years 2024 through 2028) has the largest repayment obligation?",
+    "expected_answer": "Fiscal year 2027 at $8,000M. FY2024 is $5,250M, FY2025 is $2,250M, FY2026 is $3,000M, and FY2028 is $0. The 'Thereafter' bucket of $34,366M is excluded as it spans multiple years.",
+    "meta": {
+      "sections": ["Note 11 – Debt"],
+      "pages": [81],
+      "notes": "tests whether model reads all rows and handles 'Thereafter'"
+    }
+  },
+  {
+    "id": "Q055",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which product or service categories had lower revenue in fiscal year 2023 compared to fiscal year 2022?",
+    "expected_answer": "Windows ($24,732M to $21,507M), Gaming ($16,230M to $15,466M), Devices ($7,306M to $5,521M), and Other ($289M to $211M).",
+    "meta": {
+      "sections": ["Note 19 – Revenue by product/service"],
+      "pages": [95],
+      "notes": "Top-n with four correct answers; tests exhaustiveness — model may stop after naming Windows or Gaming"
+    }
+  },
+  {
+    "id": "Q056",
+    "type": "cross_section",
+    "source_type": "table",
+    "question": "As of June 30, 2023, what were Microsoft's total operating lease liabilities versus total finance lease liabilities, and which was larger?",
+    "expected_answer": "Total operating lease liabilities were $15,137M and total finance lease liabilities were $17,067M. Finance lease liabilities were larger.",
+    "meta": {
+      "sections": ["Note 14 – Leases"],
+      "pages": [87],
+      "notes": "Counterintuitive — finance exceeds operating; both totals require summing current and non-current from the same note"
+    }
+  },
+  {
+    "id": "Q057",
+    "type": "multi_hop",
+    "source_type": "prose",
+    "question": "What was the total combined value of operating and finance leases that had not yet commenced as of June 30, 2023?",
+    "expected_answer": "$42.1 billion. Operating leases not yet commenced were $7.7B and finance leases not yet commenced were $34.4B.",
+    "meta": {
+      "sections": ["Note 14 – Leases"],
+      "pages": [87],
+      "notes": "Both figures in the same prose paragraph; not in the lease maturity table, tests if model reads surrounding narrative"
+    }
+  },
+  {
+    "id": "Q058",
+    "type": "negative",
+    "source_type": null,
+    "question": "What was the absolute dollar revenue from Xbox hardware and Xbox content and services separately for fiscal year 2023?",
+    "expected_answer": "The document does not disclose these separately.",
+    "meta": {
+      "sections": [],
+      "pages": [],
+      "notes": "Near-miss negative: percentage changes exist in prose but absolute splits do not"
+    }
+  },
+  {
+    "id": "Q059",
+    "type": "negative",
+    "source_type": null,
+    "question": "What credit rating does Microsoft hold as of fiscal year 2023?",
+    "expected_answer": "The document does not disclose Microsoft's credit rating.",
+    "meta": {
+      "sections": [],
+      "pages": [],
+      "notes": "Hallucination trap — credit rating is public knowledge but absent from the 10K"
+    }
+  },
+  {
+    "id": "Q060",
+    "type": "cross_section",
+    "source_type": "table+prose",
+    "question": "What was the largest functional employee category by headcount as of June 30, 2023, and how does its headcount compare to the total R&D expense in fiscal year 2023?",
+    "expected_answer": "Operations was the largest category at 89,000 employees. R&D had 72,000 employees. Separately, R&D expense was $27,195M in FY2023",
+    "meta": {
+      "sections": ["Human Capital Resources", "MD&A – Research and Development"],
+      "pages": [10, 47],
+      "notes": "Cross headcount prose and R&D expense table; tests if model conflates R&D headcount with R&D expense"
+    }
+  }
+]

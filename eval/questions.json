@@ -80,7 +80,7 @@
     "meta": {
       "sections": ["Cash Flows Statement"],
       "pages": [61],
-      "notes": "Large table extraction."
+      "notes": "Large table extraction. Non-total answer"
     }
   },
   {
@@ -88,11 +88,11 @@
     "type": "factoid",
     "source_type": "table",
     "question": "How much was Microsoft's common stock and paid-in capital as of 2023?",
-    "expected_answer": "$86,939 million.",
+    "expected_answer": "$93,718 million.",
     "meta": {
       "sections": ["Stockholders' Equity Statements"],
       "pages": [62],
-      "notes": "Large table extraction. Answer on first line"
+      "notes": "Large table extraction."
     }
   },
   {
@@ -159,8 +159,8 @@
     "id": "Q014",
     "type": "negative",
     "source_type": null,
-    "question": "How many employees does Microsoft have as of June 30, 2023?",
-    "expected_answer": "The exact figure is not provided.",
+    "question": "How many employees does Microsoft have as of June 30, 2024?",
+    "expected_answer": "The figure is not provided.",
     "meta": {
       "sections": [],
       "pages": [],
@@ -232,11 +232,331 @@
     "type": "multi_hop",
     "source_type": "table+prose",
     "question": "What were Microsoft's total operating expenses (R&D + Sales & Marketing + G&A) for FY2023, and how did each component change year-over-year as a percentage?",
-    "expected_answer": "R&D: $27,195M (+11%), Sales & Marketing: $22,759M (+4%), G&A: $7,575M (+28%). Total opex: $57,529M. The individual figures and percentage changes are each stated separately in the MD&A.",
+    "expected_answer": "R&D: $27,195M (+11%), Sales & Marketing: $22,759M (+4%), G&A: $7,575M (+28%). Total opex: $57,529M.",
     "meta": {
       "sections": ["MD&A – Operating Expenses"],
       "pages": [47, 48],
       "notes": "Multi-part extraction from three adjacent but separate sub-sections"
+    }
+  },
+  {
+    "id": "Q021",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What was Microsoft's diluted earnings per share for fiscal year 2023?",
+    "expected_answer": "$9.68.",
+    "meta": {
+      "sections": [
+        "Income Statements"
+      ],
+      "pages": [
+        58
+      ],
+      "notes": "Simple table extraction from income statement"
+    }
+  },
+  {
+    "id": "Q022",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What were Microsoft's total assets as of June 30, 2023?",
+    "expected_answer": "$411,976 million.",
+    "meta": {
+      "sections": [
+        "Balance Sheets"
+      ],
+      "pages": [
+        60
+      ],
+      "notes": "Balance sheet total"
+    }
+  },
+  {
+    "id": "Q023",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "What was the agreed-upon acquisition price for Activision Blizzard, and had the deal closed as of the filing date?",
+    "expected_answer": "$68.7 billion ($95.00 per share, all-cash). The deal had not closed as of the filing date.",
+    "meta": {
+      "sections": [
+        "Note 8 – Business Combinations",
+        "MD&A – Other Planned Uses of Capital"
+      ],
+      "pages": [
+        52,
+        79
+      ],
+      "notes": "Prose fact + temporal reasoning about deal status"
+    }
+  },
+  {
+    "id": "Q024",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "How much of Microsoft's FY2023 total revenue came from service and other revenue versus product revenue?",
+    "expected_answer": "Service and other revenue: $147,216 million. Product revenue: $64,699 million.",
+    "meta": {
+      "sections": [
+        "Income Statements"
+      ],
+      "pages": [
+        58
+      ],
+      "notes": "Revenue type split, table-only figures"
+    }
+  },
+  {
+    "id": "Q025",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What was Microsoft's net cash from operations for fiscal year 2023?",
+    "expected_answer": "$87,582 million.",
+    "meta": {
+      "sections": [
+        "Cash Flows Statements"
+      ],
+      "pages": [
+        61
+      ],
+      "notes": "Cash flow statement extraction"
+    }
+  },
+  {
+    "id": "Q026",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "How many Microsoft 365 Consumer subscribers did Microsoft have as of fiscal year 2023?",
+    "expected_answer": "67.0 million.",
+    "meta": {
+      "sections": [
+        "MD&A – Overview"
+      ],
+      "pages": [
+        40
+      ],
+      "notes": "KPI from prose highlights"
+    }
+  },
+  {
+    "id": "Q027",
+    "type": "factoid",
+    "source_type": "table",
+    "question": "What was Microsoft's provision for income taxes in fiscal year 2023?",
+    "expected_answer": "$16,950 million.",
+    "meta": {
+      "sections": [
+        "Income Statements"
+      ],
+      "pages": [
+        58
+      ],
+      "notes": "Non-headline income statement line"
+    }
+  },
+  {
+    "id": "Q028",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "How much transition tax under the TCJA did Microsoft still owe as of June 30, 2023, and over what period is it payable?",
+    "expected_answer": "$10.5 billion remaining, payable over the next three years, with $2.7 billion due within 12 months.",
+    "meta": {
+      "sections": [
+        "MD&A – Income Taxes (Material Cash Requirements)"
+      ],
+      "pages": [
+        52
+      ],
+      "notes": "Prose with multiple sub-facts"
+    }
+  },
+  {
+    "id": "Q029",
+    "type": "factoid",
+    "source_type": "prose",
+    "question": "How much remained available under Microsoft's share repurchase program as of June 30, 2023?",
+    "expected_answer": "$22.3 billion remained of the $60 billion share repurchase program.",
+    "meta": {
+      "sections": [
+        "MD&A – Share Repurchases"
+      ],
+      "pages": [
+        52
+      ],
+      "notes": "Prose fact"
+    }
+  },
+  {
+    "id": "Q030",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "What was the largest component of property and equipment by gross carrying value as of June 30, 2023?",
+    "expected_answer": "Computer equipment and software at $74,961 million, followed by buildings and improvements at $68,465 million.",
+    "meta": {
+      "sections": [
+        "Note 7 – Property and Equipment"
+      ],
+      "pages": [
+        77
+      ],
+      "notes": "Superlative over a table with multiple line items"
+    }
+  },
+  {
+    "id": "Q031",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "What was the single largest product/service category by revenue in fiscal year 2023, and what was its revenue?",
+    "expected_answer": "Server products and cloud services at $79,970 million.",
+    "meta": {
+      "sections": [
+        "Note 19 – Revenue by product/service"
+      ],
+      "pages": [
+        95
+      ],
+      "notes": "Superlative from product revenue table"
+    }
+  },
+  {
+    "id": "Q032",
+    "type": "superlative",
+    "source_type": "table",
+    "question": "Which category of intangible assets had the highest net carrying amount as of June 30, 2023?",
+    "expected_answer": "Technology-based at $3,656 million net. Customer-related was $3,234 million, marketing-related was $2,462 million, and contract-based was $14 million.",
+    "meta": {
+      "sections": [
+        "Note 10 – Intangible Assets"
+      ],
+      "pages": [
+        80
+      ],
+      "notes": "Superlative from a table with gross/accumulated/net columns"
+    }
+  },
+  {
+    "id": "Q033",
+    "type": "negative",
+    "source_type": null,
+    "question": "What was Microsoft's market capitalization as of June 30, 2023?",
+    "expected_answer": "The document does not disclose market capitalization as of June 30, 2023.",
+    "meta": {
+      "sections": [],
+      "pages": [],
+      "notes": "Near-miss negative — related figure exists for different date and metric"
+    }
+  },
+  {
+    "id": "Q034",
+    "type": "negative",
+    "source_type": null,
+    "question": "What was Microsoft's revenue in China for fiscal year 2023?",
+    "expected_answer": "The document does not provide revenue by individual country other than the United States. It only discloses United States ($106,744M) versus other countries ($105,171M).",
+    "meta": {
+      "sections": [],
+      "pages": [],
+      "notes": "Negative — geographic table exists nearby but lacks country-level granularity"
+    }
+  },
+  {
+    "id": "Q035",
+    "type": "cross_section",
+    "source_type": "table+prose",
+    "question": "What percentage of Microsoft's FY2023 revenue came from the United States, and what was the impact of foreign currency on total revenue?",
+    "expected_answer": "US revenue was $106,744M out of $211,915M total, approximately 50.4%. Foreign currency had an unfavorable impact of 4% on total revenue.",
+    "meta": {
+      "sections": [
+        "Note 19 – Geographic Data",
+        "MD&A – FY2023 vs FY2022 summary"
+      ],
+      "pages": [
+        94,
+        44
+      ],
+      "notes": "Geographic table + FX impact from prose"
+    }
+  },
+  {
+    "id": "Q036",
+    "type": "cross_section",
+    "source_type": "table+prose",
+    "question": "What was the value of Microsoft's long-lived assets in Ireland as of June 30, 2023, and why is Ireland significant to Microsoft's tax structure?",
+    "expected_answer": "$16,359 million. Microsoft's effective tax rate is lower than the US statutory rate partly because it produces and distributes products and services through its foreign regional operations center in Ireland, where earnings are taxed at lower rates.",
+    "meta": {
+      "sections": [
+        "Note 19 – Geographic Data (long-lived assets)",
+        "MD&A – Income Taxes"
+      ],
+      "pages": [
+        95,
+        48
+      ],
+      "notes": "Asset table + tax prose from different sections"
+    }
+  },
+  {
+    "id": "Q037",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's current ratio as of June 30, 2023?",
+    "expected_answer": "Current ratio is approximately 1.77.",
+    "meta": {
+      "sections": [
+        "Balance Sheets"
+      ],
+      "pages": [
+        60
+      ],
+      "notes": "Meaning of current ratio + dividing two table figures"
+    }
+  },
+  {
+    "id": "Q038",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What percentage of Microsoft's total FY2023 revenue came from service and other revenue?",
+    "expected_answer": "Service and other revenue was $147,216M out of $211,915M total, approximately 69.5%.",
+    "meta": {
+      "sections": [
+        "Income Statements"
+      ],
+      "pages": [
+        58
+      ],
+      "notes": "Division of two lines from same table"
+    }
+  },
+  {
+    "id": "Q039",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was Microsoft's total unearned revenue (current plus non-current) as of June 30, 2023?",
+    "expected_answer": "Short-term unearned revenue was $50,901M and long-term unearned revenue was $2,912M, totaling $53,813M.",
+    "meta": {
+      "sections": [
+        "Balance Sheets",
+        "MD&A – Unearned Revenue"
+      ],
+      "pages": [
+        51,
+        60
+      ],
+      "notes": "Summing two balance sheet lines, or reading the recognition schedule total"
+    }
+  },
+  {
+    "id": "Q040",
+    "type": "multi_hop",
+    "source_type": "table",
+    "question": "What was the year-over-year increase in property and equipment (net) from June 30, 2022 to June 30, 2023?",
+    "expected_answer": "PP&E net increased from $74,398M to $95,641M, an increase of $21,243M.",
+    "meta": {
+      "sections": [
+        "Balance Sheets"
+      ],
+      "pages": [
+        60
+      ],
+      "notes": "Subtraction across two years in same table"
     }
   }
 ]

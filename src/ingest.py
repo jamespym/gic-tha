@@ -54,7 +54,7 @@ def _line_is_heading(line: dict, body_size: float, sole_in_block: bool = True) -
     if text == text.lower():
         return False
 
-    # All-caps standalone heading (e.g. "INFORMATION ABOUT OUR EXECUTIVE OFFICERS")
+    # All-caps standalone heading
     non_space = text.replace(" ", "")
     if sole_in_block and len(non_space) >= 4 and text == text.upper():
         return True
@@ -231,16 +231,12 @@ def extract_sections(
 # Chunking
 # ---------------------------------------------------------------------------
 
-# Approximate token count: 1 token ≈ 4 chars (conservative for English prose)
-_CHARS_PER_TOKEN = 4
-
-
 def _split_into_chunks(text: str, max_tokens: int, overlap_tokens: int) -> list[str]:
     """Split text into overlapping chunks by approximate token count.
     Uses word boundaries to avoid mid-word splits.
     """
-    max_chars = max_tokens * _CHARS_PER_TOKEN
-    overlap_chars = overlap_tokens * _CHARS_PER_TOKEN
+    max_chars = max_tokens * config.CHARS_PER_TOKEN
+    overlap_chars = overlap_tokens * config.CHARS_PER_TOKEN
 
     if len(text) <= max_chars:
         return [text]
@@ -308,7 +304,6 @@ def ingest(
     filter_footnotes: bool = True,
 ) -> list[Chunk]:
     """Parse a PDF and return a list of Chunks ready for indexing.
-    
     """
     
     doc = fitz.open(str(pdf_path))
@@ -317,7 +312,6 @@ def ingest(
     doc.close()
     return chunks
 
-# TEST BLOCK
 if __name__ == "__main__":
     import sys
 
@@ -326,23 +320,7 @@ if __name__ == "__main__":
 
     print(f"Total chunks: {len(chunks)}")
     print(f"Avg chunk length: {sum(len(c.text) for c in chunks) // len(chunks)} chars")
-    print()
 
-    for i in [340, 341, 342, 343, 344, 350, 351, 352, 353, 354, 356, 358, 360, 370, 380, 390, 400, 410, 430]:
-        if i < len(chunks):
-            c = chunks[i]
-            print(f"--- Chunk {c.chunk_id} | Section: {c.section} | Pages {c.page_start}-{c.page_end} ---")
-            print(c.text[:300])
-            print()
-            
-    from collections import Counter
-    headings = Counter(c.section for c in chunks)
-    for heading, count in headings.most_common(20):
-        print(f"{count:4d}  {heading}")
-        
-    # p51_chunks = [c for c in chunks if c.page_start <= 51 <= c.page_end]
-    # print(f"Chunks covering page 51: {len(p51_chunks)}")
-    # for c in p51_chunks:
-    #     print(f"--- Chunk {c.chunk_id} | {c.section} | Pages {c.page_start}-{c.page_end} ---")
-    #     print(repr(c.text[:500]))
-    #     print()
+    for c in chunks[:10]:
+        print(f"\n--- Chunk {c.chunk_id} | {c.section} | Pages {c.page_start}-{c.page_end} ---")
+        print(c.text[:300])

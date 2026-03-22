@@ -10,7 +10,6 @@ from .generate import generate
 
 _client = OpenAI(api_key=config.OPENAI_API_KEY)
 
-QUESTIONS_PATH = config.PROJECT_ROOT / "eval" / "questions.json"
 RESULTS_DIR = config.PROJECT_ROOT / "eval" / "results"
 
 
@@ -104,9 +103,8 @@ def _print_summary(summary: dict) -> None:
             print(f"  {label:<15} {s['passed']}/{s['total']} passed ({s['pct']}%)")
 
 
-def run_eval() -> None:
-    """Run the full evaluation suite and save results."""
-    questions = json.loads(QUESTIONS_PATH.read_text())
+def run_eval(questions_file: str = "questions.json") -> None:
+    questions = json.loads((config.PROJECT_ROOT / "eval" / questions_file).read_text())
 
     print("Loading indexes and models...")
     chunks, faiss_index, bm25_index = load_index()
@@ -125,14 +123,15 @@ def run_eval() -> None:
         answer = generated["answer"]
         print(f"  Answer: {answer}")
 
-        retrieval_passed, retrieval_reason = _score_retrieval(question, top_chunks)
         faithfulness_passed, faithfulness_reason = _score_faithfulness(answer, top_chunks)
         if is_negative:
+            retrieval_passed, retrieval_reason = None, "skipped — negative question"
             correctness_passed, correctness_reason = None, "skipped — negative question"
         else:
+            retrieval_passed, retrieval_reason = _score_retrieval(question, top_chunks)
             correctness_passed, correctness_reason = _score_correctness(question, expected, answer)
 
-        print(f"  Retrieval:    {'PASS' if retrieval_passed else 'FAIL'}")
+        print(f"  Retrieval:    {'PASS' if retrieval_passed else 'FAIL' if retrieval_passed is not None else 'SKIP'}")
         print(f"  Correctness:  {'PASS' if correctness_passed else 'FAIL' if correctness_passed is not None else 'SKIP'}")
         print(f"  Faithfulness: {'PASS' if faithfulness_passed else 'FAIL'}\n")
 
@@ -163,4 +162,5 @@ def run_eval() -> None:
 
 
 if __name__ == "__main__":
-    run_eval()
+    import sys
+    run_eval(sys.argv[1] if len(sys.argv) > 1 else "questions.json")
