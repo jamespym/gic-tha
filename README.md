@@ -44,7 +44,7 @@ Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (
 | Negative | 3 | 4 | 75% |
 | Superlative | 5 | 6 | 83% |
 
-**Table 3 - Adversarial Question Set:**
+**Table 3 - Adversarial Question Set**.
 | Dimension | Passed | Total | Pass Rate |
 |---|---|---|---|
 | Retrieval | 16 | 18 | 89% |
