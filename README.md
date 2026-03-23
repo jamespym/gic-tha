@@ -35,7 +35,6 @@ Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (
 | Correctness | 35 | 40 | 88% |
 | Faithfulness | 40 | 40 | 100% |
 
----
 **Table 2 - Correctness by Question Type**. 
 | Question Type | Passed | Total | Pass Rate |
 |---|---|---|---|
