@@ -77,7 +77,7 @@
 
 ---
 
-## Adversarial question set (top-k = 10)
+## Adversarial question set
 
 `eval_20260323_024422_topk10_adv.json` · 20 questions
 
