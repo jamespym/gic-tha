@@ -26,7 +26,7 @@ Dense and sparse each return top 50 candidates, fused with RRF (k=60). This prov
 GPT-4o-mini at temperature=0. 4o-mini was chosen for its cost effectiveness at prototyping, and can be swapped to local LLMs or Azure OpenAI for IP privacy. The prompt engineering enforces citation by source number, prohibits extrapolation beyond retrieved context, and requires an explicit "not in sources" response for unanswerable questions.
 
 ## Evaluation
-Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (do the retrieved chunks contain enough information to answer the question?), Correctness (is the answer factually right, compared against the reference answer?), and Faithfulness (does every claim in the answer stay within the retrieved chunks?). The retrieval and generation split allows us to diagnose where the system is failing and make appropriate changes. Questions answer pairs were classified by question type and tagged as table/prose.
+Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (do the retrieved chunks contain enough information to answer the question?), Correctness (is the answer factually right, compared against the reference answer?), and Faithfulness (does every claim in the answer stay within the retrieved chunks?). The retrieval and generation split allows us to diagnose where the system is failing and make appropriate changes. Question-answer pairs were classified by question type and tagged as table/prose to test table retrieval.
 
 **Table 1 - Results by Dimension**. 
 | Dimension | Passed | Total | Pass Rate |
@@ -44,14 +44,16 @@ Evaluation was inspired by RAGAS, and scored on 3 binary dimensions. Retrieval (
 | Negative | 3 | 4 | 75% |
 | Superlative | 5 | 6 | 83% |
 
+**Ablation:** top-k 5 -> 10: Correctness 80% -> 88%
+
 **Table 3 - Adversarial Question Set**.
+
+Heavy intent, inference, and calculations
 | Dimension | Passed | Total | Pass Rate |
 |---|---|---|---|
 | Retrieval | 16 | 18 | 89% |
 | Correctness | 13 | 20 | 65% |
 | Faithfulness | 20 | 20 | 100% |
-
-**Ablation:** top-k 5 -> 10: Correctness 80% -> 88%
  
 ## Setup
 **Requirements:** Python 3.11+
