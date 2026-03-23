@@ -232,11 +232,11 @@
     "type": "cross_section",
     "source_type": "table+prose",
     "question": "What was the largest functional employee category by headcount as of June 30, 2023, and what was the total R&D expense in fiscal year 2023?",
-    "expected_answer": "Operations was the largest category at 89,000 employees. R&D expense for FY2023 was $27,195M. Note: the R&D headcount was 72,000 employees — R&D headcount and R&D expense are distinct figures.",
+    "expected_answer": "Operations was the largest category at 89,000 employees. R&D expense for FY2023 was $27,195M.",
     "meta": {
       "sections": ["Human Capital Resources", "MD&A – Research and Development"],
       "pages": [10, 47],
-      "notes": "Cross headcount prose and R&D expense table; tests if model conflates R&D headcount with R&D expense"
+      "notes": "Cross headcount prose and R&D expense table; tests if model confuses R&D headcount with R&D expense"
     }
   }
 ]

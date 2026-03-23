@@ -54,6 +54,9 @@ Heavy intent, inference, and calculations
 | Retrieval | 16 | 18 | 89% |
 | Correctness | 13 | 20 | 65% |
 | Faithfulness | 20 | 20 | 100% |
+
+**Ablation:** top-k 5 -> 10: Correctness 80% -> 88%.
+**Full Results:** See APPENDIX.md for full eval
  
 ## Setup
 **Requirements:** Python 3.11+
