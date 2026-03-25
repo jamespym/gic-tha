@@ -5,7 +5,7 @@ A retrieval-augmented generation (RAG) system for answering questions over a sin
 ---
 
 ## Problem framing
-A 100 page PDF may contain dense prose, multi-column tables, and the same concepts repeated over again. In order to reflect the difficulty of parsing such PDFs, a finance document (Microsoft's 2023 10-K) was chosen as it contains all of the difficulties above, making it a good testing ground for our RAG system.
+A 100 page PDF may contain dense prose, multi-column tables, and similar concepts repeated multiple times over the course of 1 document. In order to reflect the difficulty of parsing such PDFs, a finance document (Microsoft's 2023 10-K) was chosen as it contains all of the difficulties above, making it a good testing ground for our RAG system.
 
 Long documents cannot be stuffed into an LLM context window without potential context loss. I scoped the solution as a retrieval-augmented pipeline: offline ingestion and indexing, hybrid retrieval at query time, and generation constrained to retrieved context only.
 
