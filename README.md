@@ -99,7 +99,7 @@ Results are written to `eval/results/eval_{timestamp}.json`.
 - **Text-based PDFs only.** The pipeline uses PyMuPDF text extraction. Scanned documents require OCR preprocessing/VLMs. Charts and figures are not handled. Assuming text-based PDFs, this setup is domain-agnostic, with no finance-specific libraries or prompts.
 - **Single-column layout assumed.** Heading detection heuristics are tuned for single-column structured documents. Multi-column layouts (e.g. research paper style) may produce incorrect section boundaries.
 - **Tables are ingested as text blocks.** Numbers lose row/column context after chunking. This is the dominant remaining failure mode on numerical queries.
-- **Approximate token counting.** Chunk size is enforced using a `chars_per_token = 4` approximation rather than a tokeniser. This is accurate for standard English prose but may overestimate token counts for heavily numeric content, potentially producing chunks longer than intended.
+- **Approximate token counting.** Chunk size is enforced using a `chars_per_token = 4` approximation rather than a tokeniser. This is accurate for standard English prose but may underestimate token counts for heavily numeric content, potentially producing chunks longer than intended.
 
 
 ## Future Improvements

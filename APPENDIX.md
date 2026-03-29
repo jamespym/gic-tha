@@ -41,7 +41,7 @@
 | Q032 | Which category of intangible assets had the highest net carrying amount as of June 30, 2023? | superlative | table | ✓ | ✓ | ✓ |
 | Q033 | What was Microsoft's market capitalisation as of June 30, 2023? | negative | n/a | - | **✗** | ✓ |
 | Q034 | What was Microsoft's revenue in China for fiscal year 2023? | negative | n/a | - | ✓ | ✓ |
-| Q035 | What percentage of Microsoft's FY2023 revenue came from the United States? | cross_section | table+prose | **✗** | **✗** | ✓ |
+| Q035 | What percentage of Microsoft's FY2023 revenue came from the United States, and what was the impact of foreign currency on total revenue? | cross_section | table+prose | **✗** | **✗** | ✓ |
 | Q036 | What was the value of Microsoft's long-lived assets in Ireland as of June 30, 2023? | cross_section | table+prose | ✓ | ✓ | ✓ |
 | Q037 | What was Microsoft's current ratio as of June 30, 2023? | multi_hop | table | ✓ | ✓ | ✓ |
 | Q038 | What percentage of Microsoft's total FY2023 revenue came from service and other revenue? | multi_hop | table | ✓ | ✓ | ✓ |
